@@ -438,73 +438,47 @@ async function buscar(){
 }
 
 function render(pags,arqs,ags,res){
-  const cnpjBuscado = modo==='corretora' ? ($('cnpj-input')||{value:''}).value : ($('cnpj-empresa-input')||{value:''}).value;
+  const cnpjBuscado = $('search-input').value.trim();
   const comprovantes = arqs||[];
-  const p=pags[0];
-  const nome=modo==='corretora'
-    ?(p.sales_firm_name||'Corretora')
-    :(p.company_legal_name||p.sales_firm_name||'Empresa');
-  const tier=p.sales_firm_tier||'';
-  $('r-avatar').textContent=nome.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
-  $('r-nome').innerHTML=nome+`<span class="tag tag-ativo">● Ativo</span>`+(tier?`<span class="tag tag-tier">${tier}</span>`:'');
-  $('r-meta').textContent=`CNPJ: ${p.sales_firm_cnpj||p.company_cnpj||''} · ${pags.length} registros`;
+  const p = pags[0]||{};
 
-  const total=pags.reduce((s,d)=>s+Number(d.sales_firm_total_payment_amount||0),0);
-  const pagos=pags.filter(d=>d.payment_status==='Pago').length;
+  // Atualiza header do resultado
+  const nomeHeader = modo==='corretora' ? (p.sales_firm_name||'Corretora') : (p.company_legal_name||p.sales_firm_name||'Empresa');
+  const tierHeader = p.sales_firm_tier||'';
+  if($('r-avatar')) $('r-avatar').textContent=nomeHeader.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+  if($('r-nome')) $('r-nome').innerHTML=nomeHeader+(tierHeader?`<span class="tag tag-tier">${tierHeader}</span>`:'');
+  if($('r-meta')) $('r-meta').textContent=`CNPJ: ${p.sales_firm_cnpj||p.company_cnpj||cnpjBuscado||''} · ${pags.length} registros`;
+
   const origens=[...new Set(pags.map(d=>d.record_source).filter(Boolean))];
-
-  $('stats-grid').innerHTML=`
-    <div class="stat-card accent">
-      <div class="stat-label">Total histórico</div>
-      <div class="stat-val">${fmtBRL(total)}</div>
-      <div class="stat-sub">${pags.length} registros</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Pagamentos pagos</div>
-      <div class="stat-val" style="color:var(--green)">${pagos}</div>
-      <div class="stat-sub">de ${pags.length} registros</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Pendentes</div>
-      <div class="stat-val" style="color:var(--red)">${pags.length-pagos}</div>
-      <div class="stat-sub">${pags.length-pagos===0?'Tudo em dia ✓':'Requer atenção'}</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Comprovantes</div>
-      <div class="stat-val">${arqs.length}</div>
-      <div class="stat-sub">PDFs encontrados</div>
-    </div>`;
 
   // === RESUMO DE ATENDIMENTO ===
   const tierClass = (t) => t==='Magenta'?'tier-magenta':t==='Ouro'?'tier-ouro':'tier-prata';
   const totPags = pags.length;
-  const totPago = pags.filter(p=>p.payment_status==='Pago'||p.payment_status==='Válido').length;
-  const totPend = pags.filter(p=>p.payment_status&&p.payment_status!=='Pago'&&p.payment_status!=='Válido').length;
-  const totValor = pags.reduce((s,p)=>s+(p.sales_firm_total_payment_amount||0),0);
-  const totNF = pags.reduce((s,p)=>s+(p.invoice_amount||0),0);
-  const empresasUnicas = [...new Set(pags.map(p=>p.company_cnpj).filter(Boolean))].length;
-  const periodos = [...new Set(pags.map(p=>p.payment_period).filter(Boolean))];
+  const totPago = pags.filter(d=>d.payment_status==='Pago'||d.payment_status==='Válido').length;
+  const totPend = pags.filter(d=>d.payment_status&&d.payment_status!=='Pago'&&d.payment_status!=='Válido').length;
+  const totValor = pags.reduce((s,d)=>s+(d.sales_firm_total_payment_amount||0),0);
+  const totNF = pags.reduce((s,d)=>s+(d.invoice_amount||0),0);
+  const empresasUnicas = [...new Set(pags.map(d=>d.company_cnpj).filter(Boolean))].length;
+  const periodos = [...new Set(pags.map(d=>d.payment_period).filter(Boolean))];
 
   const temResumo = res && res.sales_firm_name;
-  const nomeCorretora = temResumo ? (res.sales_firm_legal_name||res.sales_firm_name) : (pags[0]?.sales_firm_name||cnpjBuscado||'—');
-  const tier = temResumo ? res.sales_firm_tier : (pags[0]?.sales_firm_tier||'—');
+  const nomeCorretora = temResumo ? (res.sales_firm_legal_name||res.sales_firm_name) : (p.sales_firm_name||cnpjBuscado||'—');
+  const tierResumo = temResumo ? res.sales_firm_tier : (p.sales_firm_tier||'—');
   const initials = nomeCorretora.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
 
-  const pixInfo = temResumo && res.pix_key ?
-    `${res.pix_key_type||'PIX'}: ${res.pix_key}` : null;
-  const bankInfo = temResumo && res.bank_name ?
-    `${res.bank_name} · Ag ${res.bank_agency||'—'} · CC ${res.bank_account||'—'} (${res.bank_account_type||'—'})` : null;
+  const pixInfo = temResumo && res.pix_key ? `${res.pix_key_type||'PIX'}: ${res.pix_key}` : null;
+  const bankInfo = temResumo && res.bank_name ? `${res.bank_name} · Ag ${res.bank_agency||'—'} · CC ${res.bank_account||'—'} (${res.bank_account_type||'—'})` : null;
   const agencyFee = temResumo && res.agency_fee ? `${res.agency_fee}%` : '—';
   const lifetimeFee = temResumo && res.lifetime_fee ? `${(res.lifetime_fee*100).toFixed(1)}%` : '—';
 
   $('stats-grid').innerHTML = `
-    <div style="margin-bottom:0">
+    <div>
       <div class="resumo-header">
         <div class="resumo-avatar">${initials}</div>
         <div>
           <div class="resumo-title">${nomeCorretora}</div>
-          <div class="resumo-sub">CNPJ: ${temResumo?res.sales_firm_cnpj:(pags[0]?.sales_firm_cnpj||cnpjBuscado||'—')} &nbsp;·&nbsp;
-            ${tier?`<span class="resumo-tier-badge ${tierClass(tier)}">${tier}</span>`:'—'}
+          <div class="resumo-sub">CNPJ: ${temResumo?res.sales_firm_cnpj:(p.sales_firm_cnpj||cnpjBuscado||'—')} &nbsp;·&nbsp;
+            ${tierResumo?`<span class="resumo-tier-badge ${tierClass(tierResumo)}">${tierResumo}</span>`:'—'}
           </div>
         </div>
       </div>
@@ -541,75 +515,41 @@ function render(pags,arqs,ags,res){
         <div>
           <div class="resumo-section">
             <div class="resumo-section-title">📊 Status dos pagamentos</div>
-            <div class="resumo-row">
-              <span class="resumo-row-label">Total de apurações</span>
-              <span class="resumo-row-value">${totPags}</span>
-            </div>
-            <div class="resumo-row">
-              <span class="resumo-row-label">Pagamentos válidos</span>
-              <span class="resumo-row-value ok">${totPago}</span>
-            </div>
-            <div class="resumo-row">
-              <span class="resumo-row-label">Pendentes</span>
-              <span class="resumo-row-value ${totPend>0?'warn':'ok'}">${totPend}</span>
-            </div>
-            <div class="resumo-row">
-              <span class="resumo-row-label">Períodos cobertos</span>
-              <span class="resumo-row-value">${periodos.length}</span>
-            </div>
-            ${temResumo&&res.ultimo_periodo?`<div class="resumo-row">
-              <span class="resumo-row-label">Último período</span>
-              <span class="resumo-row-value">${res.ultimo_periodo}</span>
-            </div>`:''}
+            <div class="resumo-row"><span class="resumo-row-label">Total de apurações</span><span class="resumo-row-value">${totPags}</span></div>
+            <div class="resumo-row"><span class="resumo-row-label">Pagamentos válidos</span><span class="resumo-row-value ok">${totPago}</span></div>
+            <div class="resumo-row"><span class="resumo-row-label">Pendentes</span><span class="resumo-row-value ${totPend>0?'warn':'ok'}">${totPend}</span></div>
+            <div class="resumo-row"><span class="resumo-row-label">Períodos cobertos</span><span class="resumo-row-value">${periodos.length}</span></div>
+            ${temResumo&&res.ultimo_periodo?`<div class="resumo-row"><span class="resumo-row-label">Último período</span><span class="resumo-row-value">${res.ultimo_periodo}</span></div>`:''}
           </div>
-
           <div class="resumo-section">
             <div class="resumo-section-title">💰 Estrutura de comissão</div>
-            <div class="resumo-row">
-              <span class="resumo-row-label">Agency fee</span>
-              <span class="resumo-row-value">${agencyFee}</span>
-            </div>
-            <div class="resumo-row">
-              <span class="resumo-row-label">Lifetime fee</span>
-              <span class="resumo-row-value">${lifetimeFee}</span>
-            </div>
+            <div class="resumo-row"><span class="resumo-row-label">Agency fee</span><span class="resumo-row-value">${agencyFee}</span></div>
+            <div class="resumo-row"><span class="resumo-row-label">Lifetime fee</span><span class="resumo-row-value">${lifetimeFee}</span></div>
           </div>
         </div>
-
         <div>
           <div class="resumo-section">
             <div class="resumo-section-title">🏦 Dados de pagamento</div>
-            ${pixInfo?`<div class="resumo-row">
-              <span class="resumo-row-label">PIX</span>
-              <span class="resumo-pix">${pixInfo}</span>
-            </div>`:`<div class="resumo-alert">⚠️ PIX não cadastrado na plataforma</div>`}
-            ${bankInfo?`<div class="resumo-row" style="margin-top:8px">
-              <span class="resumo-row-label">Banco</span>
-              <span class="resumo-row-value">${bankInfo}</span>
-            </div>`:(!pixInfo?`<div style="margin-top:6px" class="resumo-alert">⚠️ Dados bancários não cadastrados</div>`:'')}
+            ${pixInfo?`<div class="resumo-row"><span class="resumo-row-label">PIX</span><span class="resumo-pix">${pixInfo}</span></div>`:`<div class="resumo-alert">⚠️ PIX não cadastrado na plataforma</div>`}
+            ${bankInfo?`<div class="resumo-row" style="margin-top:8px"><span class="resumo-row-label">Banco</span><span class="resumo-row-value">${bankInfo}</span></div>`:(!pixInfo?`<div style="margin-top:6px" class="resumo-alert">⚠️ Dados bancários não cadastrados</div>`:'')}
           </div>
-
-          ${agentes.length>0?`
+          ${ags&&ags.length>0?`
           <div class="resumo-section">
             <div class="resumo-section-title">👤 Agentes vinculados</div>
-            ${agentes.slice(0,3).map(a=>`
+            ${ags.slice(0,3).map(a=>`
               <div class="resumo-row">
                 <span class="resumo-row-label">${a.sales_agent_name||'—'}</span>
                 <span class="resumo-row-value na" style="font-size:10px">${a.sales_agent_document||''}</span>
               </div>`).join('')}
-            ${agentes.length>3?`<div style="font-size:11px;color:var(--text-m);margin-top:4px;">+${agentes.length-3} agentes</div>`:''}
+            ${ags.length>3?`<div style="font-size:11px;color:var(--text-m);margin-top:4px;">+${ags.length-3} agentes</div>`:''}
+          </div>`:''}
+          ${arqs.length>0?`
+          <div class="resumo-section">
+            <div class="resumo-section-title">📄 Comprovantes</div>
+            <div class="resumo-row"><span class="resumo-row-label">PDFs no Drive</span><span class="resumo-row-value ok">${arqs.length} comprovantes</span></div>
           </div>`:''}
         </div>
       </div>
-
-      ${comprovantes.length>0||arqs.length>0?`
-      <div class="resumo-section" style="margin-top:8px">
-        <div class="resumo-section-title">📄 Comprovantes</div>
-        <div class="resumo-row">
-          <span class="resumo-row-label">PDFs disponíveis no Drive</span>
-          <span class="resumo-row-value ok">${arqs.length} comprovantes</span>
-        </div>
-      </div>`:''}
     </div>
   `;
 
