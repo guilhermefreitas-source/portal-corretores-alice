@@ -3,775 +3,547 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval' data: blob:;">
 <title>Portal dos Corretores · Alice</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap');
 :root {
-  --deep:#40002d; --magenta:#be0380; --magenta-light:rgba(190,3,128,0.08); --magenta-mid:rgba(190,3,128,0.15);
-  --off-white:#f3f2f0; --surface:#fff; --surface-2:#faf9f7;
-  --border:#ece9e2; --border-strong:#dbd7d0;
-  --text:#1a1a18; --text-s:#5c5b57; --text-m:#9a9894;
-  --green:#2a6e0f; --green-bg:#e8f5e0;
-  --amber:#7a4e00; --amber-bg:#fdf3e0;
-  --red:#a02020; --red-bg:#fceaea;
-  --r-sm:6px; --r-md:10px; --r-lg:14px;
-  --shadow-lg:0 8px 32px rgba(64,0,45,0.10);
+  --deep:#40002d; --mag:#be0380; --mag-l:rgba(190,3,128,0.08); --mag-m:rgba(190,3,128,0.15);
+  --bg:#f3f2f0; --surf:#fff; --surf2:#faf9f7;
+  --bd:#ece9e2; --bd2:#dbd7d0;
+  --tx:#1a1a18; --txs:#5c5b57; --txm:#9a9894;
+  --gr:#2a6e0f; --gr-bg:#e8f5e0;
+  --am:#7a4e00; --am-bg:#fdf3e0;
+  --re:#a02020; --re-bg:#fceaea;
+  --r:6px; --rm:10px; --rl:14px;
+  --sh:0 8px 32px rgba(64,0,45,0.10);
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--off-white);color:var(--text);min-height:100vh;font-size:14px;line-height:1.5;}
-.page{max-width:940px;margin:0 auto;padding:24px 16px 48px;}
-
-/* TOPBAR */
-.topbar{background:var(--deep);border-radius:var(--r-lg) var(--r-lg) 0 0;padding:0 28px;height:56px;display:flex;align-items:center;justify-content:space-between;}
-.topbar-brand{display:flex;align-items:center;gap:10px;color:var(--off-white);font-size:15px;font-weight:600;letter-spacing:-0.01em;}
-.topbar-pill{width:8px;height:8px;border-radius:50%;background:var(--magenta);box-shadow:0 0 8px var(--magenta);}
+body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;font-size:14px;line-height:1.5;}
+.page{max-width:960px;margin:0 auto;padding:24px 16px 48px;}
+.topbar{background:var(--deep);border-radius:var(--rl) var(--rl) 0 0;padding:0 28px;height:56px;display:flex;align-items:center;justify-content:space-between;}
+.topbar-brand{display:flex;align-items:center;gap:10px;color:#f3f2f0;font-size:15px;font-weight:600;}
+.topbar-dot{width:8px;height:8px;border-radius:50%;background:var(--mag);box-shadow:0 0 8px var(--mag);}
 .topbar-user{font-size:12px;color:rgba(243,242,240,0.5);display:flex;align-items:center;gap:6px;}
-.topbar-avatar{width:26px;height:26px;border-radius:50%;background:rgba(190,3,128,0.3);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#f3f2f0;}
-
-/* PORTAL */
-.portal{background:var(--surface);border-radius:0 0 var(--r-lg) var(--r-lg);box-shadow:var(--shadow-lg);overflow:hidden;}
-
-/* MODOS */
-.search-modes{display:flex;background:var(--surface-2);border-bottom:1px solid var(--border);padding:0 28px;}
-.mode-btn{padding:14px 0;margin-right:28px;font-size:13px;font-weight:500;color:var(--text-m);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;font-family:inherit;transition:color .15s;}
-.mode-btn.active{color:var(--magenta);border-bottom-color:var(--magenta);font-weight:600;}
-
-/* BUSCA */
-.search-wrap{padding:20px 28px;border-bottom:1px solid var(--border);background:var(--surface-2);}
-.search-row{display:flex;gap:8px;}
-.search-field{flex:1;padding:10px 14px;border:1.5px solid var(--border-strong);border-radius:var(--r-md);font-size:14px;font-family:inherit;background:var(--surface);color:var(--text);transition:border-color .15s;}
-.search-field:focus{outline:none;border-color:var(--magenta);}
-.search-field::placeholder{color:var(--text-m);}
-.search-cta{padding:10px 22px;background:var(--magenta);color:#fff;border:none;border-radius:var(--r-md);font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;transition:background .15s;white-space:nowrap;}
-.search-cta:hover{background:#a3026e;}
-.search-cta:disabled{background:var(--text-m);cursor:not-allowed;}
-
-/* ESTADOS */
-.loading{display:none;padding:52px;text-align:center;}
+.topbar-av{width:26px;height:26px;border-radius:50%;background:rgba(190,3,128,0.3);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#f3f2f0;}
+.portal{background:var(--surf);border-radius:0 0 var(--rl) var(--rl);box-shadow:var(--sh);overflow:hidden;}
+.modes{display:flex;background:var(--surf2);border-bottom:1px solid var(--bd);padding:0 28px;}
+.mbtn{padding:14px 0;margin-right:28px;font-size:13px;font-weight:500;color:var(--txm);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;font-family:inherit;transition:color .15s;}
+.mbtn.active{color:var(--mag);border-bottom-color:var(--mag);font-weight:600;}
+.swrap{padding:20px 28px;border-bottom:1px solid var(--bd);background:var(--surf2);}
+.srow{display:flex;gap:8px;}
+.sfield{flex:1;padding:10px 14px;border:1.5px solid var(--bd2);border-radius:var(--rm);font-size:14px;font-family:inherit;background:var(--surf);color:var(--tx);transition:border-color .15s;}
+.sfield:focus{outline:none;border-color:var(--mag);}
+.sfield::placeholder{color:var(--txm);}
+.sbtn{padding:10px 22px;background:var(--mag);color:#fff;border:none;border-radius:var(--rm);font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;transition:background .15s;}
+.sbtn:hover{background:#a3026e;}
+.sbtn:disabled{background:var(--txm);cursor:not-allowed;}
+.errbar{display:none;margin:12px 28px 0;padding:11px 14px;background:var(--re-bg);border:1px solid #f3c6c6;border-radius:var(--rm);font-size:13px;color:var(--re);}
+.loading{display:none;padding:52px;text-align:center;color:var(--txm);font-size:13px;}
 .loading.on{display:block;}
-.spinner{width:28px;height:28px;margin:0 auto 12px;border:2.5px solid var(--border);border-top-color:var(--magenta);border-radius:50%;animation:spin .7s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg);}}
-.loading-lbl{font-size:13px;color:var(--text-m);}
-.empty-state{padding:64px 28px;text-align:center;}
-.empty-icon{font-size:32px;margin-bottom:12px;line-height:1;}
-.empty-title{font-size:16px;font-weight:600;color:var(--text-s);margin-bottom:6px;}
-.empty-sub{font-size:13px;color:var(--text-m);}
-.error-bar{display:none;margin:12px 28px 0;padding:11px 14px;background:var(--red-bg);border:1px solid #f3c6c6;border-radius:var(--r-md);font-size:13px;color:var(--red);}
-
-/* RESULT HEAD */
-.result-area{display:none;}
-.result-head{padding:20px 28px 0;display:flex;align-items:center;gap:14px;}
-.r-avatar{width:44px;height:44px;border-radius:50%;background:var(--magenta-mid);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:var(--magenta);flex-shrink:0;letter-spacing:-0.02em;}
-.r-name-block{flex:1;}
-.r-name{font-size:17px;font-weight:700;color:var(--text);letter-spacing:-0.02em;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-.r-meta{font-size:12px;color:var(--text-m);margin-top:3px;}
-.tag{display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:999px;font-size:11px;font-weight:600;}
-.tag-ativo{background:var(--green-bg);color:var(--green);}
-.tag-tier{background:var(--magenta-light);color:var(--magenta);}
-
-/* ABAS */
-.tabs{display:flex;border-bottom:1px solid var(--border);padding:0 28px;margin-top:16px;background:var(--surface-2);overflow-x:auto;}
-.tab-btn{padding:11px 0;margin-right:24px;font-size:13.5px;font-weight:500;color:var(--text-m);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;font-family:inherit;transition:color .15s;}
-.tab-btn.active{color:var(--deep);border-bottom-color:var(--magenta);font-weight:700;}
-.tab-pane{display:none;padding:24px 28px 32px;}
-.tab-pane.active{display:block;}
-
-/* STATS */
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;}
-.stat-card{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-md);padding:16px;}
-.stat-card.accent{background:var(--magenta-light);border-color:rgba(190,3,128,0.2);}
-.stat-label{font-size:11px;font-weight:600;color:var(--text-m);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;}
-.stat-val{font-size:22px;font-weight:700;color:var(--deep);letter-spacing:-.03em;line-height:1.1;}
-.stat-card.accent .stat-val{color:var(--magenta);}
-.stat-sub{font-size:11px;color:var(--text-m);margin-top:4px;}
-
-/* FILTROS */
-.filtro-bar{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;padding:14px 16px;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-md);margin-bottom:16px;}
-.filtro-group{display:flex;flex-direction:column;gap:4px;}
-.filtro-lbl{font-size:11px;font-weight:600;color:var(--text-m);text-transform:uppercase;letter-spacing:.04em;}
-.filtro-input,.filtro-select{padding:8px 10px;border:1.5px solid var(--border-strong);border-radius:var(--r-sm);font-size:13px;font-family:inherit;background:var(--surface);color:var(--text);}
-.filtro-input:focus,.filtro-select:focus{outline:none;border-color:var(--magenta);}
-.filtro-btn{padding:8px 18px;height:36px;background:var(--deep);color:#fff;border:none;border-radius:var(--r-sm);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;}
-.filtro-btn:hover{background:#5a0040;}
-.filtro-clear{padding:8px 12px;height:36px;background:transparent;color:var(--text-m);border:1.5px solid var(--border-strong);border-radius:var(--r-sm);font-size:13px;font-family:inherit;cursor:pointer;}
-.result-count{font-size:12px;color:var(--text-m);margin-bottom:10px;}
-
-/* TABELA */
-.table-wrap{border-radius:var(--r-md);border:1px solid var(--border);overflow:hidden;overflow-x:auto;}
-table{width:100%;border-collapse:collapse;font-size:13px;}
-thead{background:var(--deep);}
-thead th{text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:rgba(243,242,240,0.7);text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;}
-tbody tr{border-bottom:1px solid var(--border);transition:background .1s;}
-tbody tr:last-child{border-bottom:none;}
-tbody tr:nth-child(even){background:var(--surface-2);}
-tbody tr:hover{background:var(--magenta-light);}
-tbody tr.hidden{display:none;}
-tbody td{padding:11px 14px;vertical-align:middle;}
-td.val{font-weight:600;}
-td.muted{color:var(--text-m);font-size:12px;}
-
-/* BADGES */
-.badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:999px;font-size:11px;font-weight:600;white-space:nowrap;}
-.badge-ok{background:var(--green-bg);color:var(--green);}
-.badge-pend{background:var(--amber-bg);color:var(--amber);}
-.badge-miss{background:var(--red-bg);color:var(--red);}
-
-/* TOTALIZADOR */
-.tot-bar{display:flex;margin-top:12px;border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden;}
-.tot-item{flex:1;padding:12px 16px;border-right:1px solid var(--border);background:var(--surface-2);}
-.tot-item:last-child{border-right:none;}
-.tot-label{font-size:11px;font-weight:600;color:var(--text-m);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;}
-.tot-val{font-size:18px;font-weight:700;color:var(--deep);letter-spacing:-.02em;}
-.tot-val.ok{color:var(--green);font-size:15px;}
-.tot-val.miss{color:var(--red);font-size:15px;}
-
-/* COMPROVANTES */
-.pdf-filter-row{display:flex;gap:8px;margin-bottom:16px;}
-.pdf-filter-btn{padding:6px 16px;border-radius:999px;font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .15s;border:1.5px solid var(--border-strong);background:var(--surface);color:var(--text-s);}
-.pdf-filter-btn.active{background:var(--deep);color:#fff;border-color:var(--deep);}
-.pdf-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;}
-.pdf-card{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-md);padding:14px 16px;display:flex;flex-direction:column;gap:8px;transition:box-shadow .15s,border-color .15s;}
-.pdf-card:hover{border-color:var(--magenta);box-shadow:0 2px 8px rgba(190,3,128,0.1);}
-.pdf-card-top{display:flex;align-items:flex-start;gap:10px;}
-.pdf-icon{width:36px;height:36px;border-radius:var(--r-sm);background:var(--red-bg);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
-.pdf-name{font-size:12px;font-weight:600;color:var(--text);line-height:1.4;word-break:break-word;}
-.pdf-meta{font-size:11px;color:var(--text-m);}
-.pdf-card-footer{display:flex;align-items:center;justify-content:space-between;}
-.pdf-origem-tag{padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;}
-.origem-alice{background:rgba(64,0,45,0.08);color:var(--deep);}
-.origem-duquesa{background:var(--magenta-light);color:var(--magenta);}
-.pdf-open-btn{font-size:12px;font-weight:600;color:var(--magenta);text-decoration:none;padding:4px 10px;border-radius:var(--r-sm);background:var(--magenta-light);transition:background .15s;}
-.pdf-open-btn:hover{background:var(--magenta-mid);}
-.pdf-empty{text-align:center;padding:40px;color:var(--text-m);font-size:13px;grid-column:1/-1;}
-
-/* MISC */
-.nf-link{color:var(--magenta);text-decoration:none;font-weight:600;font-size:12px;}
-.nf-link:hover{text-decoration:underline;}
-.source-badge{display:inline-flex;align-items:center;gap:4px;margin-top:12px;padding:3px 8px;border-radius:999px;font-size:10px;font-weight:600;background:rgba(64,0,45,0.05);color:var(--text-m);}
-.section-label{font-size:11px;font-weight:700;color:var(--text-m);text-transform:uppercase;letter-spacing:.06em;margin:0 0 12px;}
-
-/* RESUMO ATENDIMENTO */
-.resumo-header{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border);}
-.resumo-avatar{width:52px;height:52px;border-radius:var(--r-md);background:var(--magenta-mid);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:var(--magenta);flex-shrink:0;}
-.resumo-title{font-size:17px;font-weight:700;color:var(--deep);letter-spacing:-.02em;}
-.resumo-sub{font-size:12px;color:var(--text-m);margin-top:3px;}
-.resumo-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:20px;}
-.resumo-metric{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-md);padding:12px 14px;}
-.resumo-metric-val{font-size:20px;font-weight:700;color:var(--deep);letter-spacing:-.02em;}
-.resumo-metric-val.magenta{color:var(--magenta);}
-.resumo-metric-label{font-size:10px;font-weight:600;color:var(--text-m);text-transform:uppercase;letter-spacing:.05em;margin-top:3px;}
-.resumo-section{margin-bottom:16px;}
-.resumo-section-title{font-size:10px;font-weight:700;color:var(--text-m);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border);}
-.resumo-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border-light, #f0e8ec);}
-.resumo-row:last-child{border-bottom:none;}
-.resumo-row-label{font-size:12px;color:var(--text-m);}
-.resumo-row-value{font-size:12px;font-weight:600;color:var(--text);text-align:right;}
-.resumo-row-value.ok{color:#1a9e5c;}
-.resumo-row-value.warn{color:#e6a817;}
-.resumo-row-value.na{color:var(--text-m);font-weight:400;}
-.resumo-tier-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700;}
-.tier-magenta{background:#fce8f3;color:#c2185b;}
-.tier-ouro{background:#fff8e1;color:#f57f17;}
-.tier-prata{background:#f5f5f5;color:#616161;}
-.resumo-pix{font-size:12px;color:var(--magenta);font-weight:600;word-break:break-all;}
-.resumo-alert{background:#fff8e1;border:1px solid #ffe082;border-radius:var(--r-sm);padding:10px 14px;font-size:12px;color:#7c5700;display:flex;gap:8px;align-items:flex-start;}
-
+.empty{padding:64px 28px;text-align:center;}
+.empty-ico{font-size:32px;margin-bottom:12px;}
+.empty-title{font-size:16px;font-weight:600;color:var(--txs);margin-bottom:6px;}
+.empty-sub{font-size:13px;color:var(--txm);}
+.rarea{display:none;padding:0;}
+/* HEADER RESULTADO */
+.rheader{display:flex;align-items:center;gap:14px;padding:20px 28px 16px;border-bottom:1px solid var(--bd);}
+.rav{width:44px;height:44px;border-radius:var(--rm);background:var(--mag-m);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:var(--mag);flex-shrink:0;}
+.rnome{font-size:16px;font-weight:700;color:var(--deep);display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.rmeta{font-size:12px;color:var(--txm);margin-top:2px;}
+.tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;}
+.tag-tier{background:var(--mag-l);color:var(--mag);}
+/* TABS */
+.tabs{display:flex;border-bottom:1px solid var(--bd);padding:0 28px;background:var(--surf2);}
+.tbtn{padding:12px 0;margin-right:24px;font-size:12px;font-weight:500;color:var(--txm);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;font-family:inherit;}
+.tbtn.active{color:var(--mag);border-bottom-color:var(--mag);font-weight:600;}
+.tpane{display:none;padding:20px 28px;}
+.tpane.active{display:block;}
+/* RESUMO */
+.r-header{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--bd);}
+.r-av2{width:52px;height:52px;border-radius:var(--rm);background:var(--mag-m);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:var(--mag);flex-shrink:0;}
+.r-title{font-size:17px;font-weight:700;color:var(--deep);}
+.r-sub{font-size:12px;color:var(--txm);margin-top:3px;display:flex;align-items:center;gap:6px;}
+.tier-badge{display:inline-flex;padding:3px 9px;border-radius:999px;font-size:11px;font-weight:700;}
+.tier-Magenta{background:#fce8f3;color:#c2185b;}
+.tier-Ouro{background:#fff8e1;color:#f57f17;}
+.tier-Prata{background:#f5f5f5;color:#616161;}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:20px;}
+.metric{background:var(--surf2);border:1px solid var(--bd);border-radius:var(--rm);padding:12px 14px;}
+.metric-val{font-size:20px;font-weight:700;color:var(--deep);}
+.metric-val.m{color:var(--mag);}
+.metric-lbl{font-size:10px;font-weight:600;color:var(--txm);text-transform:uppercase;letter-spacing:.05em;margin-top:3px;}
+.r-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.r-section{margin-bottom:16px;}
+.r-stitle{font-size:10px;font-weight:700;color:var(--txm);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--bd);}
+.r-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #f5f2ee;}
+.r-row:last-child{border-bottom:none;}
+.r-lbl{font-size:12px;color:var(--txm);}
+.r-val{font-size:12px;font-weight:600;color:var(--tx);}
+.r-val.ok{color:#1a9e5c;}
+.r-val.warn{color:#e6a817;}
+.r-val.na{color:var(--txm);font-weight:400;}
+.r-alert{background:var(--am-bg);border:1px solid #ffe082;border-radius:var(--r);padding:8px 12px;font-size:12px;color:var(--am);margin-bottom:6px;}
 /* AGENTES */
-.agentes-list{display:flex;flex-direction:column;gap:8px;}
-.agente-card{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-md);padding:14px 16px;display:flex;align-items:center;gap:14px;}
-.agente-avatar{width:38px;height:38px;border-radius:50%;background:var(--magenta-mid);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--magenta);flex-shrink:0;}
-.agente-info{flex:1;}
-.agente-name{font-size:13px;font-weight:600;color:var(--text);}
-.agente-firm{font-size:11px;color:var(--text-m);margin-top:2px;}
-.agente-cnpj{font-size:11px;color:var(--text-m);}
-.agente-doc{font-size:11px;color:var(--text-m);background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:2px 7px;white-space:nowrap;}
-
-/* BOTÃO DETALHE */
-.btn-detail{background:none;border:none;cursor:pointer;color:var(--magenta);font-size:14px;padding:2px 6px;border-radius:var(--r-sm);transition:background .12s;line-height:1;}
-.btn-detail:hover{background:var(--magenta-light);}
-
+.agent-card{background:var(--surf2);border:1px solid var(--bd);border-radius:var(--rm);padding:10px 14px;display:flex;align-items:center;gap:12px;margin-bottom:6px;}
+.agent-av{width:34px;height:34px;border-radius:50%;background:var(--mag-m);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--mag);flex-shrink:0;}
+.agent-name{font-size:13px;font-weight:600;color:var(--tx);}
+.agent-firm{font-size:11px;color:var(--txm);}
+.agent-cpf{font-size:11px;color:var(--txm);background:var(--surf);border:1px solid var(--bd);border-radius:var(--r);padding:2px 6px;white-space:nowrap;}
+/* TABELA */
+.frow{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:flex-end;}
+.flbl{font-size:11px;font-weight:600;color:var(--txm);display:block;margin-bottom:4px;}
+.finput{padding:7px 10px;border:1.5px solid var(--bd2);border-radius:var(--r);font-size:12px;font-family:inherit;background:var(--surf);}
+.finput:focus{outline:none;border-color:var(--mag);}
+select.finput{min-width:120px;}
+.fcount{font-size:12px;color:var(--txm);margin-left:auto;align-self:center;}
+.tbl-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:12px;}
+th{background:var(--deep);color:rgba(255,255,255,0.85);font-weight:600;font-size:11px;text-align:left;padding:10px 12px;white-space:nowrap;}
+td{padding:9px 12px;border-bottom:1px solid var(--bd);vertical-align:middle;}
+tr:hover td{background:var(--mag-l);}
+tr.hidden{display:none;}
+.val{font-weight:600;}
+.muted{color:var(--txs);}
+.badge{display:inline-flex;padding:3px 8px;border-radius:999px;font-size:10px;font-weight:700;}
+.b-ok{background:var(--gr-bg);color:var(--gr);}
+.b-pend{background:var(--am-bg);color:var(--am);}
+.b-miss{background:var(--re-bg);color:var(--re);}
+.dbtn{background:none;border:none;cursor:pointer;color:var(--mag);font-size:14px;padding:2px 6px;border-radius:var(--r);}
+.dbtn:hover{background:var(--mag-l);}
+/* PDF */
+.pfilters{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.pfbtn{padding:6px 14px;border:1.5px solid var(--bd2);border-radius:999px;font-size:12px;font-weight:500;background:var(--surf);cursor:pointer;transition:all .15s;}
+.pfbtn.active{background:var(--mag);color:#fff;border-color:var(--mag);}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;}
+.pcard{background:var(--surf2);border:1px solid var(--bd);border-radius:var(--rm);padding:14px;display:flex;flex-direction:column;gap:8px;}
+.pcard-name{font-size:11px;font-weight:600;color:var(--tx);line-height:1.4;word-break:break-word;}
+.pcard-meta{font-size:10px;color:var(--txm);}
+.pcard-link{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;background:var(--deep);color:#fff;border-radius:var(--r);font-size:11px;font-weight:600;text-decoration:none;margin-top:auto;}
+.pcard-link:hover{background:var(--mag);}
+.pempty{padding:32px;text-align:center;color:var(--txm);font-size:13px;}
 /* MODAL */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(30,0,20,0.45);z-index:1000;align-items:center;justify-content:center;padding:16px;}
-.modal-overlay.open{display:flex;}
-.modal{background:var(--surface);border-radius:var(--r-lg);box-shadow:0 16px 48px rgba(64,0,45,0.18);width:100%;max-width:560px;max-height:90vh;overflow-y:auto;animation:modalIn .18s ease;}
-@keyframes modalIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
-.modal-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px 16px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface);z-index:1;}
-.modal-title{font-size:15px;font-weight:700;color:var(--deep);letter-spacing:-.02em;}
-.modal-subtitle{font-size:12px;color:var(--text-m);margin-top:2px;}
-.modal-close{background:none;border:none;cursor:pointer;font-size:20px;color:var(--text-m);padding:4px 8px;border-radius:var(--r-sm);line-height:1;transition:background .12s;}
-.modal-close:hover{background:var(--magenta-light);color:var(--magenta);}
-.modal-body{padding:20px 24px 24px;}
-.modal-section{margin-bottom:20px;}
-.modal-section-title{font-size:10px;font-weight:700;color:var(--text-m);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border);}
-.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.modal-field{display:flex;flex-direction:column;gap:3px;}
-.modal-field.full{grid-column:1/-1;}
-.modal-field-label{font-size:10px;font-weight:600;color:var(--text-m);text-transform:uppercase;letter-spacing:.04em;}
-.modal-field-value{font-size:13px;color:var(--text);font-weight:500;word-break:break-word;}
-.modal-field-value.highlight{font-size:16px;font-weight:700;color:var(--magenta);}
-.modal-field-value.muted{color:var(--text-m);font-weight:400;}
-
-@media(max-width:600px){
-  .page{padding:0 0 32px;}
-  .topbar,.search-wrap,.search-modes,.tabs,.result-head,.tab-pane{padding-left:16px;padding-right:16px;}
-  .stats-grid{grid-template-columns:1fr 1fr;}
-  .tot-bar{flex-wrap:wrap;}
-  .pdf-grid{grid-template-columns:1fr;}
-}
+.moverlay{display:none;position:fixed;inset:0;background:rgba(30,0,20,0.45);z-index:1000;align-items:center;justify-content:center;padding:16px;}
+.moverlay.open{display:flex;}
+.modal{background:var(--surf);border-radius:var(--rl);box-shadow:0 16px 48px rgba(64,0,45,0.18);width:100%;max-width:540px;max-height:90vh;overflow-y:auto;}
+.mhead{display:flex;align-items:center;justify-content:space-between;padding:18px 22px 14px;border-bottom:1px solid var(--bd);position:sticky;top:0;background:var(--surf);}
+.mtitle{font-size:15px;font-weight:700;color:var(--deep);}
+.msub{font-size:11px;color:var(--txm);margin-top:2px;}
+.mclose{background:none;border:none;cursor:pointer;font-size:20px;color:var(--txm);padding:4px 8px;line-height:1;border-radius:var(--r);}
+.mclose:hover{background:var(--mag-l);color:var(--mag);}
+.mbody{padding:18px 22px 22px;}
+.msection{margin-bottom:18px;}
+.mstitle{font-size:10px;font-weight:700;color:var(--txm);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--bd);}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.mfield{display:flex;flex-direction:column;gap:3px;}
+.mfield.full{grid-column:1/-1;}
+.mflbl{font-size:10px;font-weight:600;color:var(--txm);text-transform:uppercase;letter-spacing:.04em;}
+.mfval{font-size:13px;color:var(--tx);font-weight:500;word-break:break-word;}
+.mfval.big{font-size:16px;font-weight:700;color:var(--mag);}
+.mnotes{background:var(--am-bg);border-left:3px solid #e6a817;padding:10px 12px;border-radius:var(--r);font-size:12px;color:var(--am);margin-top:8px;}
+.src-badge{display:inline-flex;align-items:center;gap:4px;margin-top:14px;padding:3px 8px;border-radius:999px;font-size:10px;font-weight:600;background:rgba(64,0,45,0.05);color:var(--txm);}
+@media(max-width:600px){.r-grid{grid-template-columns:1fr;}.mgrid{grid-template-columns:1fr;}.metrics{grid-template-columns:1fr 1fr;}}
 </style>
 </head>
 <body>
 <div class="page">
+  <div class="topbar">
+    <div class="topbar-brand"><div class="topbar-dot"></div>Portal dos Corretores</div>
+    <div class="topbar-user"><div class="topbar-av">AS</div>Revenue · Alice Saúde</div>
+  </div>
+  <div class="portal">
+    <div class="modes">
+      <button class="mbtn active" onclick="setMode('corretora',this)">Corretora</button>
+      <button class="mbtn" onclick="setMode('empresa',this)">Empresa</button>
+    </div>
+    <div class="swrap">
+      <div class="srow">
+        <input class="sfield" id="sinput" type="text" autocomplete="off"
+               placeholder="CNPJ da corretora — ex: 00469777000108"
+               onkeydown="if(event.key==='Enter')buscar()">
+        <button class="sbtn" id="sbtn" onclick="buscar()">Buscar</button>
+      </div>
+    </div>
+    <div class="errbar" id="errbar"></div>
+    <div class="loading" id="loading">🔍 Buscando dados…</div>
 
-<div class="topbar">
-  <div class="topbar-brand"><div class="topbar-pill"></div>Portal dos Corretores</div>
-  <div class="topbar-user">
-    <div class="topbar-avatar">AS</div>
-    Revenue · Alice Saúde
+    <div class="empty" id="empty">
+      <div class="empty-ico">🔍</div>
+      <div class="empty-title" id="empty-title">Busque uma corretora pelo CNPJ</div>
+      <div class="empty-sub">Digite o CNPJ e clique em Buscar</div>
+    </div>
+
+    <div class="rarea" id="rarea">
+      <div class="rheader">
+        <div class="rav" id="rav">--</div>
+        <div>
+          <div class="rnome" id="rnome">—</div>
+          <div class="rmeta" id="rmeta">—</div>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <button class="tbtn active" onclick="showTab('resumo',this)">📋 Resumo</button>
+        <button class="tbtn" onclick="showTab('historico',this)">📊 Histórico <span id="cnt-hist" style="background:var(--mag-l);color:var(--mag);padding:1px 6px;border-radius:999px;font-size:10px;margin-left:4px;"></span></button>
+        <button class="tbtn" onclick="showTab('comprovantes',this)">📄 Comprovantes <span id="cnt-pdf" style="background:var(--mag-l);color:var(--mag);padding:1px 6px;border-radius:999px;font-size:10px;margin-left:4px;"></span></button>
+      </div>
+
+      <!-- ABA RESUMO -->
+      <div class="tpane active" id="tab-resumo">
+        <div id="resumo-content"></div>
+        <span class="src-badge">📊 Metabase · member_lifecycle</span>
+      </div>
+
+      <!-- ABA HISTÓRICO -->
+      <div class="tpane" id="tab-historico">
+        <div class="frow">
+          <div><label class="flbl">De</label><input class="finput" id="fde" type="date"></div>
+          <div><label class="flbl">Até</label><input class="finput" id="fate" type="date"></div>
+          <div><label class="flbl">Status</label>
+            <select class="finput" id="fstatus">
+              <option value="">Todos</option>
+              <option value="Válido">Válido</option>
+              <option value="Pago">Pago</option>
+              <option value="Pendente">Pendente</option>
+            </select>
+          </div>
+          <div><label class="flbl">Origem</label>
+            <select class="finput" id="forigem"><option value="">Todas</option></select>
+          </div>
+          <button class="sbtn" style="padding:7px 14px;font-size:12px;align-self:flex-end;" onclick="filtrar()">Filtrar</button>
+          <button class="sbtn" style="padding:7px 14px;font-size:12px;align-self:flex-end;background:var(--surf2);color:var(--txm);border:1.5px solid var(--bd2);" onclick="limparFiltros()">Limpar</button>
+          <span class="fcount" id="fcount"></span>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Referência</th><th>Período</th><th>Empresa</th>
+                <th>Valor total</th><th>Valor NF</th><th>Origem</th>
+                <th>Tier</th><th>Status</th><th>Pago em</th><th></th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ABA COMPROVANTES -->
+      <div class="tpane" id="tab-comprovantes">
+        <div class="pfilters" id="pfilters">
+          <button class="pfbtn active" onclick="filtrarPDF('TODOS',this)">Todos</button>
+          <button class="pfbtn" onclick="filtrarPDF('ALICE',this)">Alice</button>
+          <button class="pfbtn" onclick="filtrarPDF('DUQUESA',this)">Duquesa</button>
+        </div>
+        <div class="pgrid" id="pgrid"></div>
+      </div>
+    </div>
   </div>
 </div>
 
-<div class="portal">
-
-  <div class="search-modes">
-    <button class="mode-btn active" onclick="setMode('corretora',this)">Corretora</button>
-    <button class="mode-btn" onclick="setMode('empresa',this)">Empresa</button>
-  </div>
-
-  <div class="search-wrap">
-    <div class="search-row">
-      <input class="search-field" id="search-input" type="text" autocomplete="off"
-             placeholder="CNPJ da corretora — ex: 00469777000108"
-             onkeydown="if(event.key==='Enter') buscar()">
-      <button class="search-cta" id="search-btn" onclick="buscar()">Buscar</button>
-    </div>
-  </div>
-
-  <div class="error-bar" id="error-bar"></div>
-
-  <div class="loading" id="loading">
-    <div class="spinner"></div>
-    <div class="loading-lbl">Consultando Metabase…</div>
-  </div>
-
-  <div class="empty-state" id="empty-state">
-    <div class="empty-icon">🔍</div>
-    <div class="empty-title">Busque uma corretora pelo CNPJ</div>
-    <div class="empty-sub">Os dados vêm direto do Metabase em tempo real</div>
-  </div>
-
-  <div class="result-area" id="result-area">
-
-    <div class="result-head">
-      <div class="r-avatar" id="r-avatar"></div>
-      <div class="r-name-block">
-        <div class="r-name" id="r-nome"></div>
-        <div class="r-meta" id="r-meta"></div>
-      </div>
-    </div>
-
-    <div class="tabs">
-      <button class="tab-btn active" onclick="showTab('resumo',this)">Resumo</button>
-      <button class="tab-btn" onclick="showTab('historico',this)">Histórico</button>
-      <button class="tab-btn" onclick="showTab('comprovantes',this)">Comprovantes</button>
-    </div>
-
-    <!-- RESUMO -->
-    <div class="tab-pane active" id="tab-resumo">
-      <div id="stats-grid"></div>
-      <div id="agentes-section" style="display:none"></div>
-      <span class="source-badge">📊 Metabase · member_lifecycle</span>
-    </div>
-
-    <!-- HISTÓRICO -->
-    <div class="tab-pane" id="tab-historico">
-      <div class="filtro-bar">
-        <div class="filtro-group">
-          <span class="filtro-lbl">De</span>
-          <input type="date" class="filtro-input" id="filtro-de" style="width:148px">
-        </div>
-        <div class="filtro-group">
-          <span class="filtro-lbl">Até</span>
-          <input type="date" class="filtro-input" id="filtro-ate" style="width:148px">
-        </div>
-        <div class="filtro-group">
-          <span class="filtro-lbl">Status pagamento</span>
-          <select class="filtro-select" id="filtro-status">
-            <option value="">Todos</option>
-            <option value="Pago">✓ Pago</option>
-            <option value="Pendente">⏳ Pendente</option>
-          </select>
-        </div>
-        <div class="filtro-group">
-          <span class="filtro-lbl">Origem</span>
-          <select class="filtro-select" id="filtro-origem"><option value="">Todas</option></select>
-        </div>
-        <button class="filtro-btn" onclick="aplicarFiltros()">Filtrar</button>
-        <button class="filtro-clear" onclick="limparFiltros()">Limpar</button>
-      </div>
-      <div class="result-count">Mostrando <strong id="count-resultado">—</strong> registros</div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Referência</th>
-              <th>Período</th>
-              <th>Empresa</th>
-              <th>Valor total</th>
-              <th>Valor NF</th>
-              <th>Origem</th>
-              <th>Tier</th>
-              <th>Status</th>
-              <th>Pago em</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody id="tabela-body"></tbody>
-        </table>
-      </div>
-      <div class="tot-bar">
-        <div class="tot-item"><div class="tot-label">Total período</div><div class="tot-val" id="tot-valor">—</div></div>
-        <div class="tot-item"><div class="tot-label">Registros</div><div class="tot-val" id="tot-count">—</div></div>
-        <div class="tot-item"><div class="tot-label">Pagos</div><div class="tot-val ok" id="tot-ok">—</div></div>
-        <div class="tot-item"><div class="tot-label">Pendentes</div><div class="tot-val miss" id="tot-pend">—</div></div>
-      </div>
-      <span class="source-badge">📊 Metabase · member_lifecycle.sales_firm_payment_sheets_history</span>
-    </div>
-
-    <!-- COMPROVANTES -->
-    <div class="tab-pane" id="tab-comprovantes">
-      <div class="section-label">Comprovantes de pagamento</div>
-      <div class="pdf-filter-row">
-        <button class="pdf-filter-btn active" onclick="filtraPDFs('TODOS',this)">Todos</button>
-        <button class="pdf-filter-btn" onclick="filtraPDFs('ALICE',this)">Alice</button>
-        <button class="pdf-filter-btn" onclick="filtraPDFs('DUQUESA',this)">Duquesa</button>
-      </div>
-      <div class="pdf-grid" id="pdf-grid"></div>
-      <span class="source-badge">📁 Google Drive · Alice + Duquesa</span>
-    </div>
-
-  </div>
-</div>
-</div>
-
-<!-- MODAL DETALHE -->
-<div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)fecharModal()">
-  <div class="modal" id="modal">
-    <div class="modal-header">
+<!-- MODAL -->
+<div class="moverlay" id="moverlay" onclick="if(event.target===this)fecharModal()">
+  <div class="modal">
+    <div class="mhead">
       <div>
-        <div class="modal-title" id="modal-title">Detalhe do Pagamento</div>
-        <div class="modal-subtitle" id="modal-subtitle"></div>
+        <div class="mtitle" id="mtitle">Detalhe</div>
+        <div class="msub" id="msub"></div>
       </div>
-      <button class="modal-close" onclick="fecharModal()">✕</button>
+      <button class="mclose" onclick="fecharModal()">✕</button>
     </div>
-    <div class="modal-body" id="modal-body"></div>
+    <div class="mbody" id="mbody"></div>
   </div>
 </div>
 
 <script>
-const API_BASE = 'https://alice-sandbox.app.n8n.cloud/webhook/corretoras';
-const API = (param) => `${API_BASE}?${param}`;
-let dados=[], pdfs=[], agentes=[], resumo={}, modo='corretora';
+const API = 'https://alice-sandbox.app.n8n.cloud/webhook/corretoras';
+let modo='corretora', dados=[], pdfsData=[], agentesData=[], resumoData={};
 const $=id=>document.getElementById(id);
-const fmtBRL=v=>'R$ '+Number(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2});
-const fmtDt=d=>{if(!d||d.startsWith('0001'))return '—';try{return new Date(d.substring(0,10)+'T12:00:00').toLocaleDateString('pt-BR');}catch{return d;}};
-const fmtMes=d=>{if(!d||d.startsWith('0001'))return '—';try{return new Date(d.substring(0,10)+'T12:00:00').toLocaleDateString('pt-BR',{month:'short',year:'numeric'});}catch{return d;}};
+const brl=v=>'R$ '+Number(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2});
+const dt=d=>{if(!d||d.startsWith('0001'))return'—';try{return new Date(d.slice(0,10)+'T12:00:00').toLocaleDateString('pt-BR');}catch{return d;}};
+const mes=d=>{if(!d||d.startsWith('0001'))return'—';try{return new Date(d.slice(0,10)+'T12:00:00').toLocaleDateString('pt-BR',{month:'short',year:'numeric'});}catch{return d;}};
 
 function setMode(m,el){
   modo=m;
-  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.mbtn').forEach(b=>b.classList.remove('active'));
   el.classList.add('active');
-  $('search-input').placeholder=m==='corretora'?'CNPJ da corretora — ex: 00469777000108':'CNPJ da empresa — ex: 34773413000120';
-  $('result-area').style.display='none';
-  $('empty-state').style.display='block';
-  $('empty-state').querySelector('.empty-title').textContent=m==='corretora'?'Busque uma corretora pelo CNPJ':'Busque uma empresa pelo CNPJ';
+  $('sinput').placeholder=m==='corretora'?'CNPJ da corretora — ex: 00469777000108':'CNPJ da empresa — ex: 22600635000162';
+  $('empty-title').textContent=m==='corretora'?'Busque uma corretora pelo CNPJ':'Busque uma empresa pelo CNPJ';
+  $('rarea').style.display='none';
+  $('empty').style.display='block';
+  $('errbar').style.display='none';
+  $('sinput').value='';
 }
 
 async function buscar(){
-  const cnpj=$('search-input').value.replace(/\D/g,'').trim();
-  if(!cnpj){alert('Digite o CNPJ.');return;}
-  $('empty-state').style.display='none';
-  $('result-area').style.display='none';
-  $('error-bar').style.display='none';
+  const raw=$('sinput').value.trim();
+  const cnpj=raw.replace(/\D/g,'');
+  if(!cnpj){$('errbar').textContent='Digite o CNPJ.';$('errbar').style.display='block';return;}
+  $('empty').style.display='none';
+  $('rarea').style.display='none';
+  $('errbar').style.display='none';
   $('loading').classList.add('on');
-  $('search-btn').disabled=true;
+  $('sbtn').disabled=true;
   const param=modo==='corretora'?`cnpj=${cnpj}`:`company_cnpj=${cnpj}`;
   try{
-    const r=await fetch(API(param),{
-      method:'GET',
-      mode:'cors',
-      headers:{'Accept':'application/json'}
-    });
-    if(!r.ok)throw new Error(`Erro ${r.status}`);
-    const res=await r.json();
-    let pags, arqs, ags, res_dados;
-    if (Array.isArray(res) && res[0]?.pagamentos) {
-      pags = res[0].pagamentos;
-      arqs = res[0].pdfs || [];
-      ags  = res[0].agentes || [];
-      res_dados = res[0].resumo || {};
-    } else if (Array.isArray(res) && res[0]?.json?.pagamentos) {
-      pags = res[0].json.pagamentos;
-      arqs = res[0].json.pdfs || [];
-      ags  = res[0].json.agentes || [];
-      res_dados = res[0].json.resumo || {};
+    const resp=await fetch(`${API}?${param}`,{method:'GET',mode:'cors',headers:{'Accept':'application/json'}});
+    if(!resp.ok)throw new Error(`HTTP ${resp.status}`);
+    const json=await resp.json();
+    let pags,arqs,ags,res;
+    if(Array.isArray(json)&&json[0]?.pagamentos){
+      pags=json[0].pagamentos; arqs=json[0].pdfs||[]; ags=json[0].agentes||[]; res=json[0].resumo||{};
     } else {
-      pags = Array.isArray(res) ? res : [];
-      arqs = []; ags = []; res_dados = {};
+      pags=Array.isArray(json)?json:[]; arqs=[]; ags=[]; res={};
     }
     $('loading').classList.remove('on');
-    $('search-btn').disabled=false;
-    if(!pags||pags.length===0){
-      $('error-bar').textContent=`Nenhum registro encontrado para ${cnpj}.`;
-      $('error-bar').style.display='block';
+    $('sbtn').disabled=false;
+    if(!pags||!pags.length){
+      $('errbar').textContent=`Nenhum registro encontrado para ${cnpj}.`;
+      $('errbar').style.display='block';
       return;
     }
-    dados=pags;pdfs=arqs;agentes=ags||[];resumo=res_dados||{};
-    render(pags,arqs,ags||[],res_dados||{});
+    dados=pags; pdfsData=arqs; agentesData=ags; resumoData=res;
+    render(pags,arqs,ags,res,cnpj);
   }catch(e){
     $('loading').classList.remove('on');
-    $('search-btn').disabled=false;
-    $('error-bar').textContent=`Erro: ${e.message}`;
-    $('error-bar').style.display='block';
+    $('sbtn').disabled=false;
+    $('errbar').textContent='Erro ao buscar: '+e.message;
+    $('errbar').style.display='block';
   }
 }
 
-function render(pags,arqs,ags,res){
-  const cnpjBuscado = $('search-input').value.trim();
-  const comprovantes = arqs||[];
-  const p = pags[0]||{};
+function render(pags,arqs,ags,res,cnpj){
+  const p=pags[0]||{};
+  const nome=modo==='corretora'?(p.sales_firm_name||cnpj):(p.company_legal_name||cnpj);
+  const tierVal=p.sales_firm_tier||'';
+  $('rav').textContent=nome.split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase()||'--';
+  $('rnome').innerHTML=nome+(tierVal?` <span class="tag tag-tier">${tierVal}</span>`:'');
+  $('rmeta').textContent=`CNPJ: ${p.sales_firm_cnpj||p.company_cnpj||cnpj} · ${pags.length} registros`;
 
-  // Atualiza header do resultado
-  const nomeHeader = modo==='corretora' ? (p.sales_firm_name||'Corretora') : (p.company_legal_name||p.sales_firm_name||'Empresa');
-  const tierHeader = p.sales_firm_tier||'';
-  if($('r-avatar')) $('r-avatar').textContent=nomeHeader.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
-  if($('r-nome')) $('r-nome').innerHTML=nomeHeader+(tierHeader?`<span class="tag tag-tier">${tierHeader}</span>`:'');
-  if($('r-meta')) $('r-meta').textContent=`CNPJ: ${p.sales_firm_cnpj||p.company_cnpj||cnpjBuscado||''} · ${pags.length} registros`;
+  // --- RESUMO ---
+  const temRes=res&&res.sales_firm_name;
+  const nomeCor=temRes?(res.sales_firm_legal_name||res.sales_firm_name):(p.sales_firm_name||cnpj||'—');
+  const tierCor=temRes?res.sales_firm_tier:(p.sales_firm_tier||'');
+  const ini=nomeCor.split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase()||'--';
+  const totVal=pags.reduce((s,d)=>s+(d.sales_firm_total_payment_amount||0),0);
+  const totNF=pags.reduce((s,d)=>s+(d.invoice_amount||0),0);
+  const totOk=pags.filter(d=>['Pago','Válido'].includes(d.payment_status)).length;
+  const totPend=pags.filter(d=>d.payment_status&&!['Pago','Válido'].includes(d.payment_status)).length;
+  const emps=[...new Set(pags.map(d=>d.company_cnpj).filter(Boolean))].length;
+  const pers=[...new Set(pags.map(d=>d.payment_period).filter(Boolean))].length;
+  const fee=temRes&&res.agency_fee?`${res.agency_fee}%`:'—';
+  const lfe=temRes&&res.lifetime_fee?`${(res.lifetime_fee*100).toFixed(1)}%`:'—';
+  const pix=temRes&&res.pix_key?`${res.pix_key_type||'PIX'}: ${res.pix_key}`:null;
+  const banco=temRes&&res.bank_name?`${res.bank_name} · Ag ${res.bank_agency||'—'} · CC ${res.bank_account||'—'}`:null;
 
-  const origens=[...new Set(pags.map(d=>d.record_source).filter(Boolean))];
-
-  // === RESUMO DE ATENDIMENTO ===
-  const tierClass = (t) => t==='Magenta'?'tier-magenta':t==='Ouro'?'tier-ouro':'tier-prata';
-  const totPags = pags.length;
-  const totPago = pags.filter(d=>d.payment_status==='Pago'||d.payment_status==='Válido').length;
-  const totPend = pags.filter(d=>d.payment_status&&d.payment_status!=='Pago'&&d.payment_status!=='Válido').length;
-  const totValor = pags.reduce((s,d)=>s+(d.sales_firm_total_payment_amount||0),0);
-  const totNF = pags.reduce((s,d)=>s+(d.invoice_amount||0),0);
-  const empresasUnicas = [...new Set(pags.map(d=>d.company_cnpj).filter(Boolean))].length;
-  const periodos = [...new Set(pags.map(d=>d.payment_period).filter(Boolean))];
-
-  const temResumo = res && res.sales_firm_name;
-  const nomeCorretora = temResumo ? (res.sales_firm_legal_name||res.sales_firm_name) : (p.sales_firm_name||cnpjBuscado||'—');
-  const tierResumo = temResumo ? res.sales_firm_tier : (p.sales_firm_tier||'—');
-  const initials = nomeCorretora.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
-
-  const pixInfo = temResumo && res.pix_key ? `${res.pix_key_type||'PIX'}: ${res.pix_key}` : null;
-  const bankInfo = temResumo && res.bank_name ? `${res.bank_name} · Ag ${res.bank_agency||'—'} · CC ${res.bank_account||'—'} (${res.bank_account_type||'—'})` : null;
-  const agencyFee = temResumo && res.agency_fee ? `${res.agency_fee}%` : '—';
-  const lifetimeFee = temResumo && res.lifetime_fee ? `${(res.lifetime_fee*100).toFixed(1)}%` : '—';
-
-  $('stats-grid').innerHTML = `
-    <div>
-      <div class="resumo-header">
-        <div class="resumo-avatar">${initials}</div>
-        <div>
-          <div class="resumo-title">${nomeCorretora}</div>
-          <div class="resumo-sub">CNPJ: ${temResumo?res.sales_firm_cnpj:(p.sales_firm_cnpj||cnpjBuscado||'—')} &nbsp;·&nbsp;
-            ${tierResumo?`<span class="resumo-tier-badge ${tierClass(tierResumo)}">${tierResumo}</span>`:'—'}
-          </div>
-        </div>
-      </div>
-
-      <div class="resumo-metrics">
-        <div class="resumo-metric">
-          <div class="resumo-metric-val magenta">${totPags}</div>
-          <div class="resumo-metric-label">Pagamentos histórico</div>
-        </div>
-        ${modo==='corretora'?`
-        <div class="resumo-metric">
-          <div class="resumo-metric-val">${empresasUnicas}</div>
-          <div class="resumo-metric-label">Empresas atendidas</div>
-        </div>
-        <div class="resumo-metric">
-          <div class="resumo-metric-val">${temResumo&&res.vidas_ativas?res.vidas_ativas.toLocaleString('pt-BR'):'—'}</div>
-          <div class="resumo-metric-label">Vidas ativas</div>
-        </div>`:`
-        <div class="resumo-metric">
-          <div class="resumo-metric-val">${empresasUnicas||1}</div>
-          <div class="resumo-metric-label">Empresa(s)</div>
-        </div>`}
-        <div class="resumo-metric">
-          <div class="resumo-metric-val magenta">${fmtBRL(totValor)}</div>
-          <div class="resumo-metric-label">Total comissões</div>
-        </div>
-        <div class="resumo-metric">
-          <div class="resumo-metric-val">${fmtBRL(totNF)}</div>
-          <div class="resumo-metric-label">Total NF</div>
-        </div>
-      </div>
-
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-        <div>
-          <div class="resumo-section">
-            <div class="resumo-section-title">📊 Status dos pagamentos</div>
-            <div class="resumo-row"><span class="resumo-row-label">Total de apurações</span><span class="resumo-row-value">${totPags}</span></div>
-            <div class="resumo-row"><span class="resumo-row-label">Pagamentos válidos</span><span class="resumo-row-value ok">${totPago}</span></div>
-            <div class="resumo-row"><span class="resumo-row-label">Pendentes</span><span class="resumo-row-value ${totPend>0?'warn':'ok'}">${totPend}</span></div>
-            <div class="resumo-row"><span class="resumo-row-label">Períodos cobertos</span><span class="resumo-row-value">${periodos.length}</span></div>
-            ${temResumo&&res.ultimo_periodo?`<div class="resumo-row"><span class="resumo-row-label">Último período</span><span class="resumo-row-value">${res.ultimo_periodo}</span></div>`:''}
-          </div>
-          <div class="resumo-section">
-            <div class="resumo-section-title">💰 Estrutura de comissão</div>
-            <div class="resumo-row"><span class="resumo-row-label">Agency fee</span><span class="resumo-row-value">${agencyFee}</span></div>
-            <div class="resumo-row"><span class="resumo-row-label">Lifetime fee</span><span class="resumo-row-value">${lifetimeFee}</span></div>
-          </div>
-        </div>
-        <div>
-          <div class="resumo-section">
-            <div class="resumo-section-title">🏦 Dados de pagamento</div>
-            ${pixInfo?`<div class="resumo-row"><span class="resumo-row-label">PIX</span><span class="resumo-pix">${pixInfo}</span></div>`:`<div class="resumo-alert">⚠️ PIX não cadastrado na plataforma</div>`}
-            ${bankInfo?`<div class="resumo-row" style="margin-top:8px"><span class="resumo-row-label">Banco</span><span class="resumo-row-value">${bankInfo}</span></div>`:(!pixInfo?`<div style="margin-top:6px" class="resumo-alert">⚠️ Dados bancários não cadastrados</div>`:'')}
-          </div>
-          ${ags&&ags.length>0?`
-          <div class="resumo-section">
-            <div class="resumo-section-title">👤 Agentes vinculados</div>
-            ${ags.slice(0,3).map(a=>`
-              <div class="resumo-row">
-                <span class="resumo-row-label">${a.sales_agent_name||'—'}</span>
-                <span class="resumo-row-value na" style="font-size:10px">${a.sales_agent_document||''}</span>
-              </div>`).join('')}
-            ${ags.length>3?`<div style="font-size:11px;color:var(--text-m);margin-top:4px;">+${ags.length-3} agentes</div>`:''}
-          </div>`:''}
-          ${arqs.length>0?`
-          <div class="resumo-section">
-            <div class="resumo-section-title">📄 Comprovantes</div>
-            <div class="resumo-row"><span class="resumo-row-label">PDFs no Drive</span><span class="resumo-row-value ok">${arqs.length} comprovantes</span></div>
-          </div>`:''}
+  $('resumo-content').innerHTML=`
+    <div class="r-header">
+      <div class="r-av2">${ini}</div>
+      <div>
+        <div class="r-title">${nomeCor}</div>
+        <div class="r-sub">
+          CNPJ: ${temRes?res.sales_firm_cnpj:(p.sales_firm_cnpj||cnpj||'—')}
+          ${tierCor?`<span class="tier-badge tier-${tierCor}">${tierCor}</span>`:''}
         </div>
       </div>
     </div>
-  `;
+    <div class="metrics">
+      <div class="metric"><div class="metric-val m">${pags.length}</div><div class="metric-lbl">Pagamentos</div></div>
+      ${modo==='corretora'?`
+        <div class="metric"><div class="metric-val">${emps}</div><div class="metric-lbl">Empresas</div></div>
+        <div class="metric"><div class="metric-val">${temRes&&res.vidas_ativas?res.vidas_ativas.toLocaleString('pt-BR'):'—'}</div><div class="metric-lbl">Vidas ativas</div></div>
+      `:`<div class="metric"><div class="metric-val">${emps||1}</div><div class="metric-lbl">Empresa(s)</div></div>`}
+      <div class="metric"><div class="metric-val m">${brl(totVal)}</div><div class="metric-lbl">Total comissões</div></div>
+      <div class="metric"><div class="metric-val">${brl(totNF)}</div><div class="metric-lbl">Total NF</div></div>
+    </div>
+    <div class="r-grid">
+      <div>
+        <div class="r-section">
+          <div class="r-stitle">📊 Status dos pagamentos</div>
+          <div class="r-row"><span class="r-lbl">Total apurações</span><span class="r-val">${pags.length}</span></div>
+          <div class="r-row"><span class="r-lbl">Válidos</span><span class="r-val ok">${totOk}</span></div>
+          <div class="r-row"><span class="r-lbl">Pendentes</span><span class="r-val ${totPend>0?'warn':'ok'}">${totPend}</span></div>
+          <div class="r-row"><span class="r-lbl">Períodos cobertos</span><span class="r-val">${pers}</span></div>
+          ${temRes&&res.ultimo_periodo?`<div class="r-row"><span class="r-lbl">Último período</span><span class="r-val">${res.ultimo_periodo}</span></div>`:''}
+        </div>
+        <div class="r-section">
+          <div class="r-stitle">💰 Estrutura de comissão</div>
+          <div class="r-row"><span class="r-lbl">Agency fee</span><span class="r-val">${fee}</span></div>
+          <div class="r-row"><span class="r-lbl">Lifetime fee</span><span class="r-val">${lfe}</span></div>
+        </div>
+      </div>
+      <div>
+        <div class="r-section">
+          <div class="r-stitle">🏦 Dados de pagamento</div>
+          ${pix?`<div class="r-row"><span class="r-lbl">PIX</span><span class="r-val" style="color:var(--mag);word-break:break-all">${pix}</span></div>`:`<div class="r-alert">⚠️ PIX não cadastrado</div>`}
+          ${banco?`<div class="r-row"><span class="r-lbl">Banco</span><span class="r-val">${banco}</span></div>`:(!pix?`<div class="r-alert">⚠️ Dados bancários não cadastrados</div>`:'')}
+        </div>
+        ${ags&&ags.length?`
+        <div class="r-section">
+          <div class="r-stitle">👤 Agentes vinculados</div>
+          ${ags.map(a=>`
+            <div class="agent-card">
+              <div class="agent-av">${(a.sales_agent_name||'?').split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase()}</div>
+              <div style="flex:1"><div class="agent-name">${a.sales_agent_name||'—'}</div><div class="agent-firm">${a.sales_firm_name||'—'}</div></div>
+              ${a.sales_agent_document?`<span class="agent-cpf">CPF: ${a.sales_agent_document}</span>`:''}
+            </div>`).join('')}
+        </div>`:''}
+        ${arqs.length?`
+        <div class="r-section">
+          <div class="r-stitle">📄 Comprovantes</div>
+          <div class="r-row"><span class="r-lbl">PDFs no Drive</span><span class="r-val ok">${arqs.length} arquivos</span></div>
+        </div>`:''}
+      </div>
+    </div>`;
 
-  $('count-resultado').textContent=totPags;
-  ['filtro-de','filtro-ate','filtro-status','filtro-origem'].forEach(id=>$(id).value='');
-
+  // --- HISTÓRICO ---
+  const origens=[...new Set(pags.map(d=>d.record_source).filter(Boolean))];
+  $('forigem').innerHTML='<option value="">Todas</option>'+origens.map(o=>`<option value="${o}">${o}</option>`).join('');
+  ['fde','fate','fstatus','forigem'].forEach(id=>$(id).value='');
   renderTabela(pags);
+
+  // --- COMPROVANTES ---
   renderPDFs(arqs,'TODOS');
-  $('result-area').style.display='block';
-  showTab('resumo',document.querySelector('.tab-btn'));
+
+  // Counters
+  $('cnt-hist').textContent=pags.length;
+  $('cnt-pdf').textContent=arqs.length;
+
+  $('rarea').style.display='block';
+  showTab('resumo',document.querySelector('.tbtn'));
 }
 
 function renderTabela(pags){
-  $('tabela-body').innerHTML=pags.map((d,i)=>{
+  $('fcount').textContent=pags.length+' registros';
+  $('tbody').innerHTML=pags.map((d,i)=>{
     const st=d.payment_status;
-    const bc=st==='Pago'?'badge-ok':st?'badge-pend':'badge-miss';
-    const bt=st==='Pago'?'✓ Pago':st||'✗ Pendente';
-    const ref=(d.invoice_group_reference_month||d.invoice_group_paid_at||'');
-    return `<tr data-ref="${ref.substring(0,10)}" data-status="${st||''}" data-origem="${d.record_source||''}">
-      <td class="val">${fmtMes(ref)}</td>
+    const bc=st==='Pago'?'b-ok':st?'b-pend':'b-miss';
+    const bt=['Pago','Válido'].includes(st)?'✓ '+st:st||'✗ Pendente';
+    const ref=d.invoice_group_reference_month||d.invoice_group_paid_at||'';
+    return `<tr data-ref="${ref.slice(0,10)}" data-status="${st||''}" data-origem="${d.record_source||''}">
+      <td class="val">${mes(ref)}</td>
       <td class="muted" style="font-size:11px">${d.payment_period||'—'}</td>
-      <td class="muted" style="max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${d.company_legal_name||'—'}</td>
-      <td class="val">${fmtBRL(d.sales_firm_total_payment_amount)}</td>
-      <td class="muted">${d.invoice_amount?fmtBRL(d.invoice_amount):'—'}</td>
+      <td class="muted" style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${d.company_legal_name||''}">${d.company_legal_name||'—'}</td>
+      <td class="val">${brl(d.sales_firm_total_payment_amount)}</td>
+      <td class="muted">${d.invoice_amount?brl(d.invoice_amount):'—'}</td>
       <td class="muted">${d.record_source||'—'}</td>
       <td>${d.sales_firm_tier?`<span class="tag tag-tier" style="font-size:10px">${d.sales_firm_tier}</span>`:'—'}</td>
       <td><span class="badge ${bc}">${bt}</span></td>
-      <td class="muted">${fmtDt(d.invoice_group_paid_at)}</td>
-      <td><button class="btn-detail" onclick="abrirDetalhe(${i})" title="Ver detalhes">🔍</button></td>
+      <td class="muted">${dt(d.invoice_group_paid_at)}</td>
+      <td><button class="dbtn" onclick="abrirDetalhe(${i})" title="Ver detalhes">🔍</button></td>
     </tr>`;
   }).join('');
-  atualizaTot(pags);
-  $('count-resultado').textContent=pags.length;
 }
 
-function abrirDetalhe(idx){
-  const d=dados[idx];
-  if(!d)return;
+function renderPDFs(arqs,filtro){
+  document.querySelectorAll('.pfbtn').forEach(b=>{
+    b.classList.toggle('active', b.textContent.trim()===(filtro==='TODOS'?'Todos':filtro));
+  });
+  const sub=filtro==='TODOS'?arqs:arqs.filter(p=>p.origem===filtro);
+  if(!sub.length){$('pgrid').innerHTML='<div class="pempty">Nenhum comprovante encontrado.</div>';return;}
+  $('pgrid').innerHTML=sub.map(p=>`
+    <div class="pcard">
+      <div class="pcard-name">${p.nome}</div>
+      <div class="pcard-meta">${p.data?'📅 '+p.data:''} · ${p.origem}</div>
+      <a class="pcard-link" href="${p.link}" target="_blank">Abrir PDF ↗</a>
+    </div>`).join('');
+}
+
+function filtrarPDF(f,el){renderPDFs(pdfsData,f);}
+
+function filtrar(){
+  const de=$('fde').value, ate=$('fate').value, st=$('fstatus').value, org=$('forigem').value;
+  document.querySelectorAll('#tbody tr').forEach(row=>{
+    const ref=row.dataset.ref, status=row.dataset.status, origem=row.dataset.origem;
+    let ok=true;
+    if(de&&ref&&ref<de) ok=false;
+    if(ate&&ref&&ref>ate) ok=false;
+    if(st&&status!==st) ok=false;
+    if(org&&origem!==org) ok=false;
+    row.classList.toggle('hidden',!ok);
+  });
+  const vis=document.querySelectorAll('#tbody tr:not(.hidden)').length;
+  $('fcount').textContent=vis+' registros';
+}
+
+function limparFiltros(){
+  ['fde','fate','fstatus','forigem'].forEach(id=>$(id).value='');
+  document.querySelectorAll('#tbody tr').forEach(r=>r.classList.remove('hidden'));
+  $('fcount').textContent=dados.length+' registros';
+}
+
+function showTab(id,el){
+  document.querySelectorAll('.tpane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));
+  $('tab-'+id).classList.add('active');
+  if(el)el.classList.add('active');
+}
+
+function abrirDetalhe(i){
+  const d=dados[i]; if(!d)return;
   const st=d.payment_status;
-  const bc=st==='Pago'?'badge-ok':st?'badge-pend':'badge-miss';
-  const bt=st==='Pago'?'✓ Pago':st||'✗ Pendente';
-
-  // Busca agente correspondente a esse pagamento
-  const agentesDoPag = agentes.filter(a =>
-    (!d.sales_firm_cnpj || a.sales_firm_cnpj === d.sales_firm_cnpj ||
-     d.sales_firm_cnpj.replace(/^0+/,'') === a.sales_firm_cnpj.replace(/^0+/,''))
-  );
-
-  $('modal-title').textContent=d.payment_type||'Pagamento';
-  $('modal-subtitle').textContent='ID: '+(d.adjusted_id||'—')+' · Sheets: '+(d.sheets_id||'—');
-
-  $('modal-body').innerHTML=`
-    <div class="modal-section">
-      <div class="modal-section-title">💰 Valores & Pagamento</div>
-      <div class="modal-grid">
-        <div class="modal-field">
-          <span class="modal-field-label">Valor comissão</span>
-          <span class="modal-field-value highlight">${fmtBRL(d.sales_firm_total_payment_amount)}</span>
-        </div>
-        <div class="modal-field">
-          <span class="modal-field-label">Valor NF</span>
-          <span class="modal-field-value highlight">${d.invoice_amount?fmtBRL(d.invoice_amount):'—'}</span>
-        </div>
-        <div class="modal-field">
-          <span class="modal-field-label">Tipo pagamento</span>
-          <span class="modal-field-value">${d.payment_type||'—'}</span>
-        </div>
-        <div class="modal-field">
-          <span class="modal-field-label">Status pagamento</span>
-          <span class="badge ${bc}" style="width:fit-content">${bt}</span>
-        </div>
-        <div class="modal-field">
-          <span class="modal-field-label">Fee factor agência</span>
-          <span class="modal-field-value">${d.agency_fee_factor!=null?d.agency_fee_factor:'—'}</span>
-        </div>
-        <div class="modal-field">
-          <span class="modal-field-label">Fee factor lifetime</span>
-          <span class="modal-field-value">${d.lifetime_fee_factor!=null?d.lifetime_fee_factor:'—'}</span>
-        </div>
+  const bc=['Pago','Válido'].includes(st)?'b-ok':st?'b-pend':'b-miss';
+  const bt=['Pago','Válido'].includes(st)?'✓ '+st:st||'✗ Pendente';
+  const ag=agentesData.filter(a=>{
+    const c1=(d.sales_firm_cnpj||'').replace(/^0+/,'');
+    const c2=(a.sales_firm_cnpj||'').replace(/^0+/,'');
+    return c1&&c2&&c1===c2;
+  });
+  $('mtitle').textContent=d.payment_type||'Pagamento';
+  $('msub').textContent=`ID: ${d.adjusted_id||'—'} · Sheets: ${d.sheets_id||'—'}`;
+  $('mbody').innerHTML=`
+    <div class="msection">
+      <div class="mstitle">💰 Valores & Status</div>
+      <div class="mgrid">
+        <div class="mfield"><span class="mflbl">Valor comissão</span><span class="mfval big">${brl(d.sales_firm_total_payment_amount)}</span></div>
+        <div class="mfield"><span class="mflbl">Valor NF</span><span class="mfval big">${d.invoice_amount?brl(d.invoice_amount):'—'}</span></div>
+        <div class="mfield"><span class="mflbl">Tipo pagamento</span><span class="mfval">${d.payment_type||'—'}</span></div>
+        <div class="mfield"><span class="mflbl">Status pagamento</span><span class="badge ${bc}" style="width:fit-content">${bt}</span></div>
       </div>
-      ${d.notes?`<div style="margin-top:10px;padding:10px 12px;background:var(--amber-bg);border-radius:var(--r-sm);border-left:3px solid #e6a817;">
-        <span style="font-size:10px;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:4px;">📝 Observações</span>
-        <span style="font-size:13px;color:var(--amber);">${d.notes}</span>
-      </div>`:''}
+      ${d.notes?`<div class="mnotes">📝 ${d.notes}</div>`:''}
     </div>
-
-    ${agentesDoPag.length>0?`
-    <div class="modal-section">
-      <div class="modal-section-title">👤 Corretor responsável</div>
-      ${agentesDoPag.map(a=>`
-        <div class="agente-card" style="margin-bottom:6px;">
-          <div class="agente-avatar">${(a.sales_agent_name||'?').split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase()}</div>
-          <div class="agente-info">
-            <div class="agente-name">${a.sales_agent_name||'—'}</div>
-            <div class="agente-firm">${a.sales_firm_name||'—'}</div>
-          </div>
-          ${a.sales_agent_document?`<span class="agente-doc">CPF: ${a.sales_agent_document}</span>`:''}
+    ${ag.length?`
+    <div class="msection">
+      <div class="mstitle">👤 Corretor responsável</div>
+      ${ag.map(a=>`
+        <div class="agent-card">
+          <div class="agent-av">${(a.sales_agent_name||'?').split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase()}</div>
+          <div style="flex:1"><div class="agent-name">${a.sales_agent_name||'—'}</div><div class="agent-firm">${a.sales_firm_name||'—'}</div></div>
+          ${a.sales_agent_document?`<span class="agent-cpf">CPF: ${a.sales_agent_document}</span>`:''}
         </div>`).join('')}
     </div>`:''}
-
-    <div class="modal-section">
-      <div class="modal-section-title">🏢 Corretora</div>
-      <div class="modal-grid">
-        <div class="modal-field full">
-          <span class="modal-field-label">Nome</span>
-          <span class="modal-field-value">${d.sales_firm_name||'—'}</span>
-        </div>
-        <div class="modal-field">
-          <span class="modal-field-label">CNPJ</span>
-          <span class="modal-field-value">${d.sales_firm_cnpj||'—'}</span>
-        </div>
-        <div class="modal-field">
-          <span class="modal-field-label">Tier</span>
-          <span class="modal-field-value">${d.sales_firm_tier||'—'}</span>
-        </div>
+    <div class="msection">
+      <div class="mstitle">🏢 Corretora</div>
+      <div class="mgrid">
+        <div class="mfield full"><span class="mflbl">Nome</span><span class="mfval">${d.sales_firm_name||'—'}</span></div>
+        <div class="mfield"><span class="mflbl">CNPJ</span><span class="mfval">${d.sales_firm_cnpj||'—'}</span></div>
+        <div class="mfield"><span class="mflbl">Tier</span><span class="mfval">${d.sales_firm_tier||'—'}</span></div>
       </div>
     </div>
-
-    <div class="modal-section">
-      <div class="modal-section-title">🏭 Empresa</div>
-      <div class="modal-grid">
-        <div class="modal-field full">
-          <span class="modal-field-label">Razão social</span>
-          <span class="modal-field-value">${d.company_legal_name||'—'}</span>
-        </div>
-        <div class="modal-field full">
-          <span class="modal-field-label">CNPJ</span>
-          <span class="modal-field-value">${d.company_cnpj||'—'}</span>
-        </div>
+    <div class="msection">
+      <div class="mstitle">🏭 Empresa</div>
+      <div class="mgrid">
+        <div class="mfield full"><span class="mflbl">Razão social</span><span class="mfval">${d.company_legal_name||'—'}</span></div>
+        <div class="mfield full"><span class="mflbl">CNPJ</span><span class="mfval">${d.company_cnpj||'—'}</span></div>
       </div>
     </div>
-
-    <div class="modal-section">
-      <div class="modal-section-title">📅 Datas & Período</div>
-      <div class="modal-grid">
-        <div class="modal-field">
-          <span class="modal-field-label">Período pagamento</span>
-          <span class="modal-field-value">${d.payment_period||'—'}</span>
-        </div>
-        <div class="modal-field">
-          <span class="modal-field-label">Pago em</span>
-          <span class="modal-field-value">${fmtDt(d.invoice_group_paid_at)}</span>
-        </div>
-        <div class="modal-field">
-          <span class="modal-field-label">Mês referência</span>
-          <span class="modal-field-value">${fmtMes(d.invoice_group_reference_month||d.invoice_group_paid_at)}</span>
-        </div>
-        <div class="modal-field">
-          <span class="modal-field-label">Origem</span>
-          <span class="modal-field-value">${d.record_source||'—'}</span>
-        </div>
+    <div class="msection">
+      <div class="mstitle">📅 Datas & Período</div>
+      <div class="mgrid">
+        <div class="mfield"><span class="mflbl">Período</span><span class="mfval">${d.payment_period||'—'}</span></div>
+        <div class="mfield"><span class="mflbl">Pago em</span><span class="mfval">${dt(d.invoice_group_paid_at)}</span></div>
+        <div class="mfield"><span class="mflbl">Mês referência</span><span class="mfval">${mes(d.invoice_group_reference_month||d.invoice_group_paid_at)}</span></div>
+        <div class="mfield"><span class="mflbl">Origem</span><span class="mfval">${d.record_source||'—'}</span></div>
       </div>
-    </div>
-  `;
-  $('modal-overlay').classList.add('open');
+    </div>`;
+  $('moverlay').classList.add('open');
   document.body.style.overflow='hidden';
 }
 
 function fecharModal(){
-  $('modal-overlay').classList.remove('open');
+  $('moverlay').classList.remove('open');
   document.body.style.overflow='';
 }
-
 document.addEventListener('keydown',e=>{if(e.key==='Escape')fecharModal();});
-
-function renderPDFs(lista,filtro){
-  const sub=filtro==='TODOS'?lista:lista.filter(p=>p.origem===filtro);
-  if(!sub.length){$('pdf-grid').innerHTML=`<div class="pdf-empty">Nenhum comprovante${filtro!=='TODOS'?' no Drive '+filtro:''}.</div>`;return;}
-  $('pdf-grid').innerHTML=sub.map(p=>`
-    <div class="pdf-card">
-      <div class="pdf-card-top">
-        <div class="pdf-icon">📄</div>
-        <div><div class="pdf-name">${p.nome}</div><div class="pdf-meta">${p.data?fmtDt(p.data):''}</div></div>
-      </div>
-      <div class="pdf-card-footer">
-        <span class="pdf-origem-tag ${p.origem==='ALICE'?'origem-alice':'origem-duquesa'}">${p.origem}</span>
-        <a href="${p.link}" target="_blank" class="pdf-open-btn">Abrir PDF ↗</a>
-      </div>
-    </div>`).join('');
-}
-
-function filtraPDFs(origem,el){
-  document.querySelectorAll('.pdf-filter-btn').forEach(b=>b.classList.remove('active'));
-  el.classList.add('active');
-  renderPDFs(pdfs,origem);
-}
-
-function aplicarFiltros(){
-  const de=$('filtro-de').value,ate=$('filtro-ate').value;
-  const st=$('filtro-status').value,org=$('filtro-origem').value;
-  document.querySelectorAll('#tabela-body tr').forEach(row=>{
-    const vis=(!de||row.dataset.ref>=de)&&(!ate||row.dataset.ref<=ate)&&
-              (!st||row.dataset.status===st)&&(!org||row.dataset.origem===org);
-    row.classList.toggle('hidden',!vis);
-  });
-  atualizaTot(dados);
-}
-
-function limparFiltros(){
-  ['filtro-de','filtro-ate','filtro-status','filtro-origem'].forEach(id=>$(id).value='');
-  document.querySelectorAll('#tabela-body tr').forEach(r=>r.classList.remove('hidden'));
-  atualizaTot(dados);
-}
-
-function atualizaTot(pags){
-  const rows=document.querySelectorAll('#tabela-body tr');
-  const vis=pags.filter((_,i)=>rows[i]&&!rows[i].classList.contains('hidden'));
-  const tot=vis.reduce((s,d)=>s+Number(d.sales_firm_total_payment_amount||0),0);
-  const ok=vis.filter(d=>d.payment_status==='Pago').length;
-  $('tot-valor').textContent=fmtBRL(tot);
-  $('tot-count').textContent=vis.length;
-  $('tot-ok').textContent=ok;
-  $('tot-pend').textContent=vis.length-ok;
-  $('count-resultado').textContent=vis.length;
-}
-
-function showTab(name,el){
-  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  $('tab-'+name).classList.add('active');
-  if(el)el.classList.add('active');else document.querySelector('.tab-btn').classList.add('active');
-}
 </script>
 </body>
 </html>
