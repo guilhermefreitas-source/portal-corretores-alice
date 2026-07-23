@@ -480,6 +480,10 @@ function showTab(id,el){
 
 function abrirDetalhe(i){
   const d=dados[i]; if(!d)return;
+  const fmtD=s=>{if(!s||s==='None'||s===null)return'—';try{const dt=new Date(s);return isNaN(dt)?s:dt.toLocaleDateString('pt-BR');}catch{return s;}};
+  const fmtBRL2=v=>{if(v==null||v==='')return'—';return'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2});};
+  const fmtFac=v=>{if(v==null||v==='')return'—';return Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2});};
+  const val=v=>(v==null||v===''||v==='None')?'—':v;
   const st=d.payment_status;
   const bc=['Pago','Válido'].includes(st)?'b-ok':st?'b-pend':'b-miss';
   const bt=['Pago','Válido'].includes(st)?'✓ '+st:st||'✗ Pendente';
@@ -488,27 +492,39 @@ function abrirDetalhe(i){
     const c2=(a.sales_firm_cnpj||'').replace(/^0+/,'');
     return c1&&c2&&c1===c2;
   });
-  const fmtFactor=v=>v!=null?`${(Number(v)*100).toFixed(0)}%`:'—';
-  const fmtD=s=>{if(!s||s.startsWith('0001'))return'—';try{return new Date(s).toLocaleDateString('pt-BR');}catch{return s;}};
-  $('mtitle').textContent=d.payment_type||'Pagamento';
-  $('msub').textContent=`ID: ${d.adjusted_id||'—'} · Sheets: ${d.sheets_id||'—'} · Origem: ${d.record_source||'—'}`;
+  $('mtitle').textContent='Detalhe do Pagamento';
+  $('msub').textContent=`Adjusted ID: ${d.adjusted_id||'—'} · Sheets ID: ${d.sheets_id||'—'}`;
+
+  const row=(lbl,v,mono)=>`
+    <div class="r-row">
+      <span class="r-lbl">${lbl}</span>
+      <span class="r-val${mono?' style="font-family:monospace;font-size:11px"':''}">` +
+      (typeof v==='string'&&v.startsWith('<')?v:val(v)) +`</span>
+    </div>`;
+
   $('mbody').innerHTML=`
     <div class="msection">
-      <div class="mstitle">💰 Valores & Pagamento</div>
-      <div class="mgrid">
-        <div class="mfield"><span class="mflbl">Valor comissão</span><span class="mfval big">${brl(d.sales_firm_total_payment_amount)}</span></div>
-        <div class="mfield"><span class="mflbl">Valor NF (invoice)</span><span class="mfval big">${d.invoice_amount?brl(d.invoice_amount):'—'}</span></div>
-        <div class="mfield"><span class="mflbl">Tipo pagamento</span><span class="mfval">${d.payment_type||'—'}</span></div>
-        <div class="mfield"><span class="mflbl">Status pagamento</span><span class="badge ${bc}" style="width:fit-content">${bt}</span></div>
-      </div>
-      ${d.notes?`<div class="mnotes">📝 <strong>Notes:</strong> ${d.notes}</div>`:''}
-      ${d.internal_notes?`<div class="mnotes" style="margin-top:6px">🔒 <strong>Internal notes:</strong> ${d.internal_notes}</div>`:''}
-      <div class="mgrid" style="margin-top:10px">
-        <div class="mfield"><span class="mflbl">Payment factor</span><span class="mfval">${fmtFactor(d.payment_factor)}</span></div>
-        <div class="mfield"><span class="mflbl">Rank (parcela)</span><span class="mfval">${d.invoice_group_rank!=null?'Parcela '+d.invoice_group_rank:'—'}</span></div>
-      </div>
+      <div class="mstitle">📋 Todos os campos</div>
+      ${row('payment_period', d.payment_period)}
+      ${row('sales_firm_cnpj', d.sales_firm_cnpj, true)}
+      ${row('sales_firm_name', d.sales_firm_name)}
+      ${row('sales_firm_tier', d.sales_firm_tier?`<span class="badge b-ok">${d.sales_firm_tier}</span>`:'')}
+      ${row('membership_activated_at', fmtD(d.membership_activated_at))}
+      ${row('deal_contract_code', d.deal_contract_code, true)}
+      ${row('company_cnpj', d.company_cnpj, true)}
+      ${row('company_legal_name', d.company_legal_name)}
+      ${row('invoice_group_rank', d.invoice_group_rank!=null?'Parcela '+d.invoice_group_rank:null)}
+      ${row('invoice_group_reference_month', fmtD(d.invoice_group_reference_month))}
+      ${row('invoice_group_paid_at', fmtD(d.invoice_group_paid_at))}
+      ${row('invoice_amount', fmtBRL2(d.invoice_amount))}
+      ${row('payment_factor', fmtFac(d.payment_factor))}
+      ${row('sales_firm_total_payment_amount', fmtBRL2(d.sales_firm_total_payment_amount))}
+      ${row('payment_status', `<span class="badge ${bc}">${bt}</span>`)}
+      ${row('notes', d.notes)}
+      ${row('record_source', d.record_source)}
+      ${row('internal_notes', d.internal_notes)}
+      ${row('payment_type', d.payment_type)}
     </div>
-
     ${ag.length?`
     <div class="msection">
       <div class="mstitle">👤 Corretor responsável</div>
@@ -519,46 +535,7 @@ function abrirDetalhe(i){
           ${a.sales_agent_document?`<span class="agent-cpf">CPF: ${a.sales_agent_document}</span>`:''}
         </div>`).join('')}
     </div>`:''}
-
-    <div class="msection">
-      <div class="mstitle">🏢 Corretora</div>
-      <div class="mgrid">
-        <div class="mfield full"><span class="mflbl">Nome</span><span class="mfval">${d.sales_firm_name||'—'}</span></div>
-        <div class="mfield"><span class="mflbl">CNPJ</span><span class="mfval">${d.sales_firm_cnpj||'—'}</span></div>
-        <div class="mfield"><span class="mflbl">Tier</span><span class="mfval">${d.sales_firm_tier||'—'}</span></div>
-      </div>
-    </div>
-
-    <div class="msection">
-      <div class="mstitle">🏭 Empresa</div>
-      <div class="mgrid">
-        <div class="mfield full"><span class="mflbl">Razão social</span><span class="mfval">${d.company_legal_name||'—'}</span></div>
-        <div class="mfield"><span class="mflbl">CNPJ</span><span class="mfval">${d.company_cnpj||'—'}</span></div>
-        <div class="mfield"><span class="mflbl">Contrato</span><span class="mfval" style="font-family:monospace">${d.deal_contract_code||'—'}</span></div>
-        <div class="mfield"><span class="mflbl">Data de adesão</span><span class="mfval">${fmtD(d.membership_activated_at)}</span></div>
-      </div>
-    </div>
-
-    <div class="msection">
-      <div class="mstitle">📅 Datas & Período</div>
-      <div class="mgrid">
-        <div class="mfield"><span class="mflbl">Período pagamento</span><span class="mfval">${d.payment_period||'—'}</span></div>
-        <div class="mfield"><span class="mflbl">Pago em</span><span class="mfval">${dt(d.invoice_group_paid_at)}</span></div>
-        <div class="mfield"><span class="mflbl">Mês referência</span><span class="mfval">${mes(d.invoice_group_reference_month||d.invoice_group_paid_at)}</span></div>
-        <div class="mfield"><span class="mflbl">Origem</span><span class="mfval">${d.record_source||'—'}</span></div>
-      </div>
-    </div>
-
-    <div class="msection">
-      <div class="mstitle">🗂️ Identificadores</div>
-      <div class="mgrid">
-        <div class="mfield"><span class="mflbl">Adjusted ID</span><span class="mfval" style="font-family:monospace;font-size:12px">${d.adjusted_id||'—'}</span></div>
-        <div class="mfield"><span class="mflbl">Sheets ID</span><span class="mfval" style="font-family:monospace;font-size:12px">${d.sheets_id||'—'}</span></div>
-        <div class="mfield"><span class="mflbl">Record source</span><span class="mfval">${d.record_source||'—'}</span></div>
-        <div class="mfield"><span class="mflbl">Mês ref. (raw)</span><span class="mfval" style="font-family:monospace;font-size:12px">${d.invoice_group_reference_month||'—'}</span></div>
-      </div>
-    </div>`;
-
+  `;
   $('moverlay').classList.add('open');
   document.body.style.overflow='hidden';
 }
