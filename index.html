@@ -489,18 +489,19 @@ function abrirDetalhe(i){
     return c1&&c2&&c1===c2;
   });
   $('mtitle').textContent=d.payment_type||'Pagamento';
-  $('msub').textContent=`ID: ${d.adjusted_id||'—'} · Sheets: ${d.sheets_id||'—'}`;
+  $('msub').textContent=`ID: ${d.adjusted_id||'—'} · Sheets: ${d.sheets_id||'—'} · Origem: ${d.record_source||'—'}`;
   $('mbody').innerHTML=`
     <div class="msection">
-      <div class="mstitle">💰 Valores & Status</div>
+      <div class="mstitle">💰 Valores & Pagamento</div>
       <div class="mgrid">
         <div class="mfield"><span class="mflbl">Valor comissão</span><span class="mfval big">${brl(d.sales_firm_total_payment_amount)}</span></div>
-        <div class="mfield"><span class="mflbl">Valor NF</span><span class="mfval big">${d.invoice_amount?brl(d.invoice_amount):'—'}</span></div>
+        <div class="mfield"><span class="mflbl">Valor NF (invoice)</span><span class="mfval big">${d.invoice_amount?brl(d.invoice_amount):'—'}</span></div>
         <div class="mfield"><span class="mflbl">Tipo pagamento</span><span class="mfval">${d.payment_type||'—'}</span></div>
         <div class="mfield"><span class="mflbl">Status pagamento</span><span class="badge ${bc}" style="width:fit-content">${bt}</span></div>
       </div>
       ${d.notes?`<div class="mnotes">📝 ${d.notes}</div>`:''}
     </div>
+
     ${ag.length?`
     <div class="msection">
       <div class="mstitle">👤 Corretor responsável</div>
@@ -511,6 +512,7 @@ function abrirDetalhe(i){
           ${a.sales_agent_document?`<span class="agent-cpf">CPF: ${a.sales_agent_document}</span>`:''}
         </div>`).join('')}
     </div>`:''}
+
     <div class="msection">
       <div class="mstitle">🏢 Corretora</div>
       <div class="mgrid">
@@ -519,6 +521,7 @@ function abrirDetalhe(i){
         <div class="mfield"><span class="mflbl">Tier</span><span class="mfval">${d.sales_firm_tier||'—'}</span></div>
       </div>
     </div>
+
     <div class="msection">
       <div class="mstitle">🏭 Empresa</div>
       <div class="mgrid">
@@ -526,15 +529,27 @@ function abrirDetalhe(i){
         <div class="mfield full"><span class="mflbl">CNPJ</span><span class="mfval">${d.company_cnpj||'—'}</span></div>
       </div>
     </div>
+
     <div class="msection">
       <div class="mstitle">📅 Datas & Período</div>
       <div class="mgrid">
-        <div class="mfield"><span class="mflbl">Período</span><span class="mfval">${d.payment_period||'—'}</span></div>
+        <div class="mfield"><span class="mflbl">Período pagamento</span><span class="mfval">${d.payment_period||'—'}</span></div>
         <div class="mfield"><span class="mflbl">Pago em</span><span class="mfval">${dt(d.invoice_group_paid_at)}</span></div>
         <div class="mfield"><span class="mflbl">Mês referência</span><span class="mfval">${mes(d.invoice_group_reference_month||d.invoice_group_paid_at)}</span></div>
         <div class="mfield"><span class="mflbl">Origem</span><span class="mfval">${d.record_source||'—'}</span></div>
       </div>
+    </div>
+
+    <div class="msection">
+      <div class="mstitle">🗂️ Identificadores</div>
+      <div class="mgrid">
+        <div class="mfield"><span class="mflbl">Adjusted ID</span><span class="mfval" style="font-family:monospace;font-size:12px">${d.adjusted_id||'—'}</span></div>
+        <div class="mfield"><span class="mflbl">Sheets ID</span><span class="mfval" style="font-family:monospace;font-size:12px">${d.sheets_id||'—'}</span></div>
+        <div class="mfield"><span class="mflbl">Record source</span><span class="mfval">${d.record_source||'—'}</span></div>
+        <div class="mfield"><span class="mflbl">Mês ref. (raw)</span><span class="mfval" style="font-family:monospace;font-size:12px">${d.invoice_group_reference_month||'—'}</span></div>
+      </div>
     </div>`;
+
   $('moverlay').classList.add('open');
   document.body.style.overflow='hidden';
 }
