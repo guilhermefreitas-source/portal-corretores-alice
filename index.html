@@ -185,6 +185,7 @@ tr.hidden{display:none;}
         <button class="tbtn active" onclick="showTab('resumo',this)">📋 Resumo</button>
         <button class="tbtn" onclick="showTab('historico',this)">📊 Histórico <span id="cnt-hist" style="background:var(--mag-l);color:var(--mag);padding:1px 6px;border-radius:999px;font-size:10px;margin-left:4px;"></span></button>
         <button class="tbtn" onclick="showTab('comprovantes',this)">📄 Comprovantes <span id="cnt-pdf" style="background:var(--mag-l);color:var(--mag);padding:1px 6px;border-radius:999px;font-size:10px;margin-left:4px;"></span></button>
+        <button class="tbtn" onclick="showTab('ap',this)">💳 NFs Pagas <span id="cnt-ap" style="background:var(--mag-l);color:var(--mag);padding:1px 6px;border-radius:999px;font-size:10px;margin-left:4px;"></span></button>
       </div>
 
       <!-- ABA RESUMO -->
@@ -227,6 +228,11 @@ tr.hidden{display:none;}
         </div>
       </div>
 
+      <!-- ABA NFs PAGAS -->
+      <div class="tpane" id="tab-ap">
+        <div id="ap-content"></div>
+      </div>
+
       <!-- ABA COMPROVANTES -->
       <div class="tpane" id="tab-comprovantes">
         <div class="pfilters" id="pfilters">
@@ -256,7 +262,7 @@ tr.hidden{display:none;}
 
 <script>
 const API = 'https://alice-sandbox.app.n8n.cloud/webhook/corretoras';
-let modo='corretora', dados=[], pdfsData=[], agentesData=[], resumoData={}, cadastroData={};
+let modo='corretora', dados=[], pdfsData=[], agentesData=[], resumoData={}, cadastroData={}, apData=[];
 const $=id=>document.getElementById(id);
 const brl=v=>'R$ '+Number(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2});
 const dt=d=>{if(!d||d.startsWith('0001'))return'—';try{return new Date(d.slice(0,10)+'T12:00:00').toLocaleDateString('pt-BR');}catch{return d;}};
@@ -302,7 +308,7 @@ async function buscar(){
       return;
     }
     dados=pags; pdfsData=arqs; agentesData=ags; resumoData=res;
-    render(pags,arqs,ags,res,json[0].cadastro||{},cnpj);
+    render(pags,arqs,ags,res,json[0].cadastro||{},json[0].accountsPayable||[],cnpj);
   }catch(e){
     $('loading').classList.remove('on');
     $('sbtn').disabled=false;
@@ -311,7 +317,7 @@ async function buscar(){
   }
 }
 
-function render(pags,arqs,ags,res,cad,cnpj){
+function render(pags,arqs,ags,res,cad,ap,cnpj){
   const p=pags[0]||{};
   const nome=modo==='corretora'?(p.sales_firm_name||cnpj):(p.company_legal_name||cnpj);
   const tierVal=p.sales_firm_tier||'';
@@ -409,6 +415,8 @@ function render(pags,arqs,ags,res,cad,cnpj){
   // Counters
   $('cnt-hist').textContent=pags.length;
   $('cnt-pdf').textContent=arqs.length;
+  $('cnt-ap').textContent=ap.length;
+  renderAP(ap);
 
   $('rarea').style.display='block';
   showTab('resumo',document.querySelector('.tbtn'));
@@ -543,6 +551,65 @@ function abrirDetalhe(i){
   $('moverlay').classList.add('open');
   document.body.style.overflow='hidden';
 }
+
+function renderAP(ap){
+  if(!ap||!ap.length){
+    $('ap-content').innerHTML='<div style="padding:32px;text-align:center;color:var(--txm);font-size:13px;">Nenhuma NF encontrada no Contas a Pagar.</div>';
+    return;
+  }
+  const fmtD=s=>{if(!s)return'—';try{return new Date(s).toLocaleDateString('pt-BR');}catch{return s;}};
+  const brl=v=>v!=null?'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2}):'—';
+  const totPago=ap.filter(r=>r.payment_status==='pago').length;
+  const totValor=ap.filter(r=>r.payment_status==='pago').reduce((s,r)=>s+(r.net_value||0),0);
+  const totAberto=ap.filter(r=>r.payment_status!=='pago').reduce((s,r)=>s+(r.open_value||0),0);
+
+  $('ap-content').innerHTML=`
+    <div class="metrics" style="margin-bottom:20px">
+      <div class="metric"><div class="metric-val">${ap.length}</div><div class="metric-lbl">Total de NFs</div></div>
+      <div class="metric"><div class="metric-val ok">${totPago}</div><div class="metric-lbl">NFs pagas</div></div>
+      <div class="metric"><div class="metric-val m">${brl(totValor)}</div><div class="metric-lbl">Total pago (líq.)</div></div>
+      <div class="metric"><div class="metric-val ${totAberto>0?'warn':''}">${brl(totAberto)}</div><div class="metric-lbl">Valor em aberto</div></div>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Nº NF</th>
+            <th>Emissão</th>
+            <th>Vencimento</th>
+            <th>Pagamento</th>
+            <th>Valor bruto</th>
+            <th>Valor líquido</th>
+            <th>Em aberto</th>
+            <th>Status</th>
+            <th>No prazo</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${ap.map(r=>{
+            const st=r.payment_status;
+            const bc=st==='pago'?'b-ok':st==='aberto'?'b-pend':'b-miss';
+            const noprazo=r.payment_on_time||'';
+            const npClass=noprazo.includes('no prazo')?'ok':noprazo.includes('fora')?'warn':'';
+            return `<tr>
+              <td class="val" style="font-family:monospace">${r.invoice_number||'—'}</td>
+              <td class="muted">${fmtD(r.invoice_issue_date)}</td>
+              <td class="muted">${fmtD(r.invoice_due_date)}</td>
+              <td class="muted">${fmtD(r.invoice_payment_date)}</td>
+              <td class="val">${brl(r.invoice_gross_value)}</td>
+              <td class="val">${brl(r.net_value)}</td>
+              <td class="${r.open_value>0?'warn':''}">${r.open_value>0?brl(r.open_value):'—'}</td>
+              <td><span class="badge ${bc}">${st||'—'}</span></td>
+              <td class="${npClass}" style="font-size:11px">${noprazo||'—'}</td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+    <span class="src-badge">📊 TOTVS · finance.accounts_payable</span>
+  `;
+}
+
 
 function fecharModal(){
   $('moverlay').classList.remove('open');
