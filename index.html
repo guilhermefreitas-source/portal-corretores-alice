@@ -256,7 +256,7 @@ tr.hidden{display:none;}
 
 <script>
 const API = 'https://alice-sandbox.app.n8n.cloud/webhook/corretoras';
-let modo='corretora', dados=[], pdfsData=[], agentesData=[], resumoData={};
+let modo='corretora', dados=[], pdfsData=[], agentesData=[], resumoData={}, cadastroData={};
 const $=id=>document.getElementById(id);
 const brl=v=>'R$ '+Number(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2});
 const dt=d=>{if(!d||d.startsWith('0001'))return'—';try{return new Date(d.slice(0,10)+'T12:00:00').toLocaleDateString('pt-BR');}catch{return d;}};
@@ -302,7 +302,7 @@ async function buscar(){
       return;
     }
     dados=pags; pdfsData=arqs; agentesData=ags; resumoData=res;
-    render(pags,arqs,ags,res,cnpj);
+    render(pags,arqs,ags,res,json[0].cadastro||{},cnpj);
   }catch(e){
     $('loading').classList.remove('on');
     $('sbtn').disabled=false;
@@ -311,7 +311,7 @@ async function buscar(){
   }
 }
 
-function render(pags,arqs,ags,res,cnpj){
+function render(pags,arqs,ags,res,cad,cnpj){
   const p=pags[0]||{};
   const nome=modo==='corretora'?(p.sales_firm_name||cnpj):(p.company_legal_name||cnpj);
   const tierVal=p.sales_firm_tier||'';
@@ -374,6 +374,8 @@ function render(pags,arqs,ags,res,cnpj){
       <div>
         <div class="r-section">
           <div class="r-stitle">🏦 Dados de pagamento</div>
+          ${cad&&cad.sales_firm_email&&cad.sales_firm_email!=='-'?`<div class="r-row"><span class="r-lbl">📧 Email recebedor</span><span class="r-val" style="color:var(--mag)">${cad.sales_firm_email}</span></div>`:`<div class="r-alert">⚠️ Email não cadastrado</div>`}
+          ${cad&&cad.sales_firm_phone_number&&cad.sales_firm_phone_number!=='-'?`<div class="r-row"><span class="r-lbl">📞 Telefone</span><span class="r-val">${cad.sales_firm_phone_number}</span></div>`:''}
           ${pix?`<div class="r-row"><span class="r-lbl">PIX</span><span class="r-val" style="color:var(--mag);word-break:break-all">${pix}</span></div>`:`<div class="r-alert">⚠️ PIX não cadastrado</div>`}
           ${banco?`<div class="r-row"><span class="r-lbl">Banco</span><span class="r-val">${banco}</span></div>`:(!pix?`<div class="r-alert">⚠️ Dados bancários não cadastrados</div>`:'')}
         </div>
