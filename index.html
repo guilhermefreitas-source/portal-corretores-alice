@@ -488,6 +488,8 @@ function abrirDetalhe(i){
     const c2=(a.sales_firm_cnpj||'').replace(/^0+/,'');
     return c1&&c2&&c1===c2;
   });
+  const fmtFactor=v=>v!=null?`${(Number(v)*100).toFixed(0)}%`:'—';
+  const fmtD=s=>{if(!s||s.startsWith('0001'))return'—';try{return new Date(s).toLocaleDateString('pt-BR');}catch{return s;}};
   $('mtitle').textContent=d.payment_type||'Pagamento';
   $('msub').textContent=`ID: ${d.adjusted_id||'—'} · Sheets: ${d.sheets_id||'—'} · Origem: ${d.record_source||'—'}`;
   $('mbody').innerHTML=`
@@ -499,7 +501,12 @@ function abrirDetalhe(i){
         <div class="mfield"><span class="mflbl">Tipo pagamento</span><span class="mfval">${d.payment_type||'—'}</span></div>
         <div class="mfield"><span class="mflbl">Status pagamento</span><span class="badge ${bc}" style="width:fit-content">${bt}</span></div>
       </div>
-      ${d.notes?`<div class="mnotes">📝 ${d.notes}</div>`:''}
+      ${d.notes?`<div class="mnotes">📝 <strong>Notes:</strong> ${d.notes}</div>`:''}
+      ${d.internal_notes?`<div class="mnotes" style="margin-top:6px">🔒 <strong>Internal notes:</strong> ${d.internal_notes}</div>`:''}
+      <div class="mgrid" style="margin-top:10px">
+        <div class="mfield"><span class="mflbl">Payment factor</span><span class="mfval">${fmtFactor(d.payment_factor)}</span></div>
+        <div class="mfield"><span class="mflbl">Rank (parcela)</span><span class="mfval">${d.invoice_group_rank!=null?'Parcela '+d.invoice_group_rank:'—'}</span></div>
+      </div>
     </div>
 
     ${ag.length?`
@@ -526,7 +533,9 @@ function abrirDetalhe(i){
       <div class="mstitle">🏭 Empresa</div>
       <div class="mgrid">
         <div class="mfield full"><span class="mflbl">Razão social</span><span class="mfval">${d.company_legal_name||'—'}</span></div>
-        <div class="mfield full"><span class="mflbl">CNPJ</span><span class="mfval">${d.company_cnpj||'—'}</span></div>
+        <div class="mfield"><span class="mflbl">CNPJ</span><span class="mfval">${d.company_cnpj||'—'}</span></div>
+        <div class="mfield"><span class="mflbl">Contrato</span><span class="mfval" style="font-family:monospace">${d.deal_contract_code||'—'}</span></div>
+        <div class="mfield"><span class="mflbl">Data de adesão</span><span class="mfval">${fmtD(d.membership_activated_at)}</span></div>
       </div>
     </div>
 
