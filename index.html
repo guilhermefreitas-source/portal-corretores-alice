@@ -489,31 +489,27 @@ function abrirDetalhe(i){
   const st=d.payment_status;
   const bc=['Pago','Válido'].includes(st)?'b-ok':st?'b-pend':'b-miss';
   const bt=['Pago','Válido'].includes(st)?'✓ '+st:st||'✗ Pendente';
-  const ag=agentesData.filter(a=>{
-    const c1=(d.sales_firm_cnpj||'').replace(/^0+/,'');
-    const c2=(a.sales_firm_cnpj||'').replace(/^0+/,'');
-    return c1&&c2&&c1===c2;
-  });
+  const agenteName=d.sales_agent_name||null;
+  const agenteCPF=d.sales_agent_document||null;
   $('mtitle').textContent='Detalhe do Pagamento';
   $('msub').textContent=`Adjusted ID: ${d.adjusted_id||'—'} · Sheets ID: ${d.sheets_id||'—'}`;
 
-  const row=(lbl,v,mono)=>`
+  const row=(lbl,v,extra)=>`
     <div class="r-row">
       <span class="r-lbl">${lbl}</span>
-      <span class="r-val${mono?' style="font-family:monospace;font-size:11px"':''}">` +
-      (typeof v==='string'&&v.startsWith('<')?v:val(v)) +`</span>
+      <span class="r-val">${extra?v:(typeof v==='string'&&v.startsWith('<')?v:val(v))}</span>
     </div>`;
 
   $('mbody').innerHTML=`
     <div class="msection">
-      <div class="mstitle">📋 Todos os campos</div>
+      <div class="mstitle">📋 Dados do pagamento</div>
       ${row('payment_period', d.payment_period)}
-      ${row('sales_firm_cnpj', d.sales_firm_cnpj, true)}
+      ${row('sales_firm_cnpj', d.sales_firm_cnpj)}
       ${row('sales_firm_name', d.sales_firm_name)}
       ${row('sales_firm_tier', d.sales_firm_tier?`<span class="badge b-ok">${d.sales_firm_tier}</span>`:'')}
       ${row('membership_activated_at', fmtD(d.membership_activated_at))}
-      ${row('deal_contract_code', d.deal_contract_code, true)}
-      ${row('company_cnpj', d.company_cnpj, true)}
+      ${row('deal_contract_code', d.deal_contract_code)}
+      ${row('company_cnpj', d.company_cnpj)}
       ${row('company_legal_name', d.company_legal_name)}
       ${row('invoice_group_rank', d.invoice_group_rank!=null?'Parcela '+d.invoice_group_rank:null)}
       ${row('invoice_group_reference_month', fmtD(d.invoice_group_reference_month))}
@@ -521,22 +517,28 @@ function abrirDetalhe(i){
       ${row('invoice_amount', fmtBRL2(d.invoice_amount))}
       ${row('payment_factor', fmtFac(d.payment_factor))}
       ${row('sales_firm_total_payment_amount', fmtBRL2(d.sales_firm_total_payment_amount))}
-      ${row('payment_status', `<span class="badge ${bc}">${bt}</span>`)}
+      ${row('payment_status', `<span class="badge ${bc}">${bt}</span>`, true)}
       ${row('notes', d.notes)}
       ${row('record_source', d.record_source)}
       ${row('internal_notes', d.internal_notes)}
       ${row('payment_type', d.payment_type)}
     </div>
-    ${ag.length?`
+    ${agenteName?`
     <div class="msection">
-      <div class="mstitle">👤 Corretor responsável</div>
-      ${ag.map(a=>`
-        <div class="agent-card">
-          <div class="agent-av">${(a.sales_agent_name||'?').split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase()}</div>
-          <div style="flex:1"><div class="agent-name">${a.sales_agent_name||'—'}</div><div class="agent-firm">${a.sales_firm_name||'—'}</div></div>
-          ${a.sales_agent_document?`<span class="agent-cpf">CPF: ${a.sales_agent_document}</span>`:''}
-        </div>`).join('')}
-    </div>`:''}
+      <div class="mstitle">👤 Corretor que fez a venda</div>
+      <div class="agent-card">
+        <div class="agent-av">${agenteName.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase()}</div>
+        <div style="flex:1">
+          <div class="agent-name">${agenteName}</div>
+          <div class="agent-firm">${d.sales_firm_name||'—'}</div>
+        </div>
+        ${agenteCPF?`<span class="agent-cpf">CPF: ${agenteCPF}</span>`:''}
+      </div>
+    </div>`:`
+    <div class="msection">
+      <div class="mstitle">👤 Corretor que fez a venda</div>
+      <div class="r-alert">Agente não identificado para este pagamento</div>
+    </div>`}
   `;
   $('moverlay').classList.add('open');
   document.body.style.overflow='hidden';
